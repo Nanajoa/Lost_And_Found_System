@@ -1,7 +1,6 @@
 # Lost_And_Found_System
 
-
-##Sprint 1 file structure (kindly don't change structure, you can make suggestions in the group though)
+_Sprint 1 file structure (kindly don't change structure, you can make suggestions in the group though)_
 /ayera  
 │── /backend (PHP API)  
 │   │── database.php  # Handles database connection  
@@ -33,8 +32,7 @@
 │── config.php  # Configuration file for environment settings  
 │── README.md  # Project documentation  #I will deal with the README file finally but for every page kindly give a short description about the page and the importance and how you implemented so the final essay is easier for me to compile. Put all the short descriptions of all the files you worked for in one word document and send to abambirebawayenma@gmail.com
 
-
-##WorkFlow
+_WorkFlow_
 
 User visits index.html → JavaScript fetches lost items from backend/search.php and displays them.
 User logs in (login.html) → Form submits to backend/auth.php?action=login, and response determines if they proceed.
@@ -43,7 +41,8 @@ User searches for an item (search_results.html) → JavaScript fetches search re
 User views item details (item_details.html) → Page fetches data from backend/item_details.php?id=123
 
 
-##Purpose: 
+_Purpose:_
+
 Backend (PHP - /backend/)
 database.php – Connects to MySQL database.
 models.php – Defines tables like users and lost_items.
