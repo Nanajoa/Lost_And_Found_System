@@ -1,5 +1,31 @@
 # Lost_And_Found_System
+Here’s a breakdown of what each team member is doing in Sprint 1 for Ayera:
 
+Database & Backend Development
+🔹 @renoblvck & @yenma.aa → Collaborating on the database schema
+🔹 @renoblvck → Creating the ER diagram based on the database schema
+🔹 @itz_py → Developing backend functionalities:
+
+database.php → Handles database connections
+auth.php → Implements user authentication (register, login) with password hashing and session management
+search.php → Implements search functionality for lost items (search by item name/description & return JSON response)
+🔹 @yenma.aa → Developing report API:
+report.php → Allows users to report lost items, stores details in the database, and returns a JSON response
+Frontend Development
+🔹 @ksgoli → Building core frontend pages:
+
+index.html → Homepage (Search lost items)
+register.html → User Registration
+login.html → User Login
+report.html → Report Lost Items
+scripts.js → Implements search functionality for retrieving and displaying lost items
+🔹 @victor.nene9 → Styling & UI Design:
+
+styles.css → Define global styles (colors, fonts, layouts)
+index.html → Style homepage (search bar, recent lost items)
+login.html & register.html → Style input fields & error handling
+report.html → Ensure form design consistency
+Ensure overall responsiveness (mobile-friendly layout)
 _Sprint 1 file structure (kindly don't change structure, you can make suggestions in the group though)_
 /ayera  
 │── /backend (PHP API)  
