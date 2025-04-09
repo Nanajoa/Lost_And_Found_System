@@ -36,6 +36,7 @@ CREATE TABLE LostItems (
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     date_lost DATE NOT NULL,
+    location_seen_at text,
     found_status ENUM('pending', 'resolved') DEFAULT 'pending',
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
