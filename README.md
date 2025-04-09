@@ -2,9 +2,9 @@
 Here’s a breakdown of what each team member is doing in Sprint 1 for Ayera:
 
 Database & Backend Development
-🔹 @renoblvck & @yenma.aa → Collaborating on the database schema
-🔹 @renoblvck → Creating the ER diagram based on the database schema
-🔹 @itz_py → Developing backend functionalities:
+🔹 @yenma.aa → Collaborating on the database schema
+🔹 @yenma.aa → Creating the ER diagram based on the database schema
+🔹 @itz_py & @renoblvck → Developing backend functionalities:
 
 database.php → Handles database connections
 auth.php → Implements user authentication (register, login) with password hashing and session management
