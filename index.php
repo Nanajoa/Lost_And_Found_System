@@ -1,4 +1,49 @@
-<php>
+<?php
+require_once __DIR__ . '/db/database.php';
+require_once __DIR__ . '/db/auth.php';
+
+// Start the session before any output
+startSessionIfNotStarted();
+
+// Handle search
+$searchResults = [];
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['search'])) {
+    $searchTerm = trim($_GET['search']);
+    if (!empty($searchTerm)) {
+        $conn = getDatabaseConnection();
+        $stmt = $conn->prepare("
+            SELECT 
+                l.id,
+                l.name,
+                l.description,
+                l.date_lost,
+                l.location_seen_at,
+                l.found_status,
+                l.created_at,
+                l.user_type,
+                CASE 
+                    WHEN l.user_type = 'student' THEN s.first_name
+                    WHEN l.user_type = 'staff' THEN st.first_name
+                END as first_name,
+                CASE 
+                    WHEN l.user_type = 'student' THEN s.last_name
+                    WHEN l.user_type = 'staff' THEN st.last_name
+                END as last_name
+            FROM LostItems l
+            LEFT JOIN Students s ON l.user_type = 'student' AND l.user_id = s.id
+            LEFT JOIN Staff st ON l.user_type = 'staff' AND l.user_id = st.id
+            WHERE l.name LIKE ? OR l.description LIKE ?
+            ORDER BY l.created_at DESC
+        ");
+        $searchParam = "%$searchTerm%";
+        $stmt->bind_param("ss", $searchParam, $searchParam);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $searchResults = $result->fetch_all(MYSQLI_ASSOC);
+    }
+}
+?>
+<!DOCTYPE html>
 <html>
   <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
@@ -38,7 +83,7 @@
                 <h2 class="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">Ayera</h2>
               </a>
             </div>
-            <label class="flex flex-col min-w-40 !h-10 max-w-64">
+            <form action="index.php" method="GET" class="flex flex-col min-w-40 !h-10 max-w-64">
               <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
                 <div
                   class="text-[#4e7397] flex border-none bg-[#e7edf3] items-center justify-center pl-4 rounded-l-xl border-r-0"
@@ -53,36 +98,47 @@
                   </svg>
                 </div>
                 <input
+                  name="search"
                   placeholder="Search"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border-none bg-[#e7edf3] focus:border-none h-full placeholder:text-[#4e7397] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                  value=""
+                  value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
                 />
               </div>
-            </label>
+            </form>
           </div>
           <div class="flex flex-1 justify-end gap-4">
             <div class="flex gap-2">
-              <a href="report.php">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Report</span>
-                </button>
-              </a>
-              <a href="login.php">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Log in</span>
-                </button>
-              </a>
-              <a href="register.php">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Sign up</span>
-                </button>
-              </a>
+              <?php if (isLoggedIn()): ?>
+                <a href="view/report.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    <span class="truncate">Report</span>
+                  </button>
+                </a>
+                <a href="actions/logout.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    <span class="truncate">Log out</span>
+                  </button>
+                </a>
+              <?php else: ?>
+                <a href="view/login.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    <span class="truncate">Log in</span>
+                  </button>
+                </a>
+                <a href="view/register.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    <span class="truncate">Sign up</span>
+                  </button>
+                </a>
+              <?php endif; ?>
             </div>
           </div>
         </header>
@@ -104,7 +160,7 @@
                       Search for things you've lost and see if someone has found them
                     </h2>
                   </div>
-                  <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
+                  <form action="index.php" method="GET" class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
                     <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
                       <div
                         class="text-[#4e7397] flex border border-[#d0dbe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-xl border-r-0"
@@ -119,19 +175,19 @@
                         </svg>
                       </div>
                       <input
+                        name="search"
                         placeholder="Start by searching for your lost item"
                         class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-full placeholder:text-[#4e7397] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
-                        value=""
+                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
                       />
-                      <div class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#d0dbe7] bg-slate-50 pr-[7px]">
-                        <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
-                        >
-                          <span class="truncate">Search</span>
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
+                      >
+                        <span class="truncate">Search</span>
+                      </button>
                     </div>
-                  </label>
+                  </form>
                 </div>
               </div>
             </div>
@@ -147,79 +203,112 @@
                     We make it easy for you to post and find lost items. Our platform helps you connect with the person who found your item, so you can arrange its return.
                   </p>
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
+                    <h3 class="text-[#0e141b] text-lg font-bold">1. Report Lost Items</h3>
+                    <p class="text-[#4e7397]">Create an account and report items you've lost. Provide details like location, time, and description.</p>
+                  </div>
+                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
+                    <h3 class="text-[#0e141b] text-lg font-bold">2. Search & Find</h3>
+                    <p class="text-[#4e7397]">Use our search feature to look for your lost items. Filter by date, location, or item type.</p>
+                  </div>
+                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
+                    <h3 class="text-[#0e141b] text-lg font-bold">3. Claim & Return</h3>
+                    <p class="text-[#4e7397]">Found your item? Contact the finder through our secure messaging system to arrange return.</p>
+                  </div>
+                </div>
                 <div class="flex gap-4">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit"
-                  >
-                    <span class="truncate">Learn more</span>
-                  </button>
-                  <a href="report.php">
-                    <button
-                      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit"
-                    >
-                      <span class="truncate">Report a lost item</span>
-                    </button>
-                  </a>
+                  <?php if (isLoggedIn()): ?>
+                    <a href="view/report.php">
+                      <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
+                        <span class="truncate">Report a lost item</span>
+                      </button>
+                    </a>
+                  <?php else: ?>
+                    <a href="view/login.php">
+                      <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
+                        <span class="truncate">Login to report</span>
+                      </button>
+                    </a>
+                  <?php endif; ?>
                 </div>
               </div>
             </div>
-            <h2 class="text-[#0e141b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Recently found items</h2>
-            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-              <div class="flex flex-col gap-3 pb-3">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
-                  style='background-image: url("https://cdn.usegalileo.ai/sdxl10/d5537d25-862f-49cb-9b38-1f43bc63ce01.png");'
-                ></div>
-                <div>
-                  <p class="text-[#0e141b] text-base font-medium leading-normal">Lost wallet</p>
-                  <p class="text-[#4e7397] text-sm font-normal leading-normal">Found by: John Smith</p>
-                </div>
+            <?php if (!empty($searchResults)): ?>
+              <h2 class="text-[#0e141b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Search Results</h2>
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+                <?php foreach ($searchResults as $item): ?>
+                  <div class="flex flex-col gap-3 pb-3">
+                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl bg-gray-200"></div>
+                    <div>
+                      <p class="text-[#0e141b] text-base font-medium leading-normal"><?php echo htmlspecialchars($item['name']); ?></p>
+                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
+                        Found by: <?php echo htmlspecialchars($item['first_name'] . ' ' . $item['last_name']); ?>
+                      </p>
+                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
+                        Status: <?php echo ucfirst($item['found_status']); ?>
+                      </p>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
               </div>
-              <div class="flex flex-col gap-3 pb-3">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
-                  style='background-image: url("https://cdn.usegalileo.ai/sdxl10/ef8f1f40-b448-4272-9bdc-eab02fa3c192.png");'
-                ></div>
-                <div>
-                  <p class="text-[#0e141b] text-base font-medium leading-normal">Lost keys</p>
-                  <p class="text-[#4e7397] text-sm font-normal leading-normal">Found by: Jane Doe</p>
-                </div>
+            <?php else: ?>
+              <h2 class="text-[#0e141b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Recently found items</h2>
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+                <?php
+                // Get recent items
+                $conn = getDatabaseConnection();
+                $stmt = $conn->prepare("
+                    SELECT 
+                        l.id,
+                        l.name,
+                        l.description,
+                        l.date_lost,
+                        l.location_seen_at,
+                        l.found_status,
+                        l.created_at,
+                        l.user_type,
+                        CASE 
+                            WHEN l.user_type = 'student' THEN s.first_name
+                            WHEN l.user_type = 'staff' THEN st.first_name
+                        END as first_name,
+                        CASE 
+                            WHEN l.user_type = 'student' THEN s.last_name
+                            WHEN l.user_type = 'staff' THEN st.last_name
+                        END as last_name
+                    FROM LostItems l
+                    LEFT JOIN Students s ON l.user_type = 'student' AND l.user_id = s.id
+                    LEFT JOIN Staff st ON l.user_type = 'staff' AND l.user_id = st.id
+                    ORDER BY l.created_at DESC
+                    LIMIT 5
+                ");
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $recentItems = $result->fetch_all(MYSQLI_ASSOC);
+                
+                foreach ($recentItems as $item):
+                ?>
+                  <div class="flex flex-col gap-3 pb-3">
+                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl bg-gray-200"></div>
+                    <div>
+                      <p class="text-[#0e141b] text-base font-medium leading-normal"><?php echo htmlspecialchars($item['name']); ?></p>
+                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
+                        Found by: <?php echo htmlspecialchars($item['first_name'] . ' ' . $item['last_name']); ?>
+                      </p>
+                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
+                        Status: <?php echo ucfirst($item['found_status']); ?>
+                      </p>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
               </div>
-              <div class="flex flex-col gap-3 pb-3">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
-                  style='background-image: url("https://cdn.usegalileo.ai/sdxl10/ea9589fa-62aa-4759-98ba-4a64f1390a28.png");'
-                ></div>
-                <div>
-                  <p class="text-[#0e141b] text-base font-medium leading-normal">Lost phone</p>
-                  <p class="text-[#4e7397] text-sm font-normal leading-normal">Found by: Alex Johnson</p>
-                </div>
-              </div>
-              <div class="flex flex-col gap-3 pb-3">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
-                  style='background-image: url("https://cdn.usegalileo.ai/sdxl10/94f11161-3ad7-4233-9be7-654209c1a1c7.png");'
-                ></div>
-                <div>
-                  <p class="text-[#0e141b] text-base font-medium leading-normal">Lost headphones</p>
-                  <p class="text-[#4e7397] text-sm font-normal leading-normal">Found by: Sarah Miller</p>
-                </div>
-              </div>
-              <div class="flex flex-col gap-3 pb-3">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
-                  style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dec9fcaf-d669-436e-962d-dbbfcd22915f.png");'
-                ></div>
-                <div>
-                  <p class="text-[#0e141b] text-base font-medium leading-normal">Lost sunglasses</p>
-                  <p class="text-[#4e7397] text-sm font-normal leading-normal">Found by: Chris Brown</p>
-                </div>
-              </div>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
     </div>
+    <div id="how-it-works" class="flex flex-col gap-10 px-4 py-10 @container">
+      <!-- Add your content here -->
+    </div>
   </body>
 </html>
-</php>

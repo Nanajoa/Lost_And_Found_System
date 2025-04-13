@@ -1,4 +1,60 @@
-<php>
+<?php
+require_once __DIR__ . '/../db/database.php';
+require_once __DIR__ . '/../db/auth.php';
+
+// Start session
+session_start();
+
+// Check if already logged in
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    header("location: ../index.php");
+    exit;
+}
+
+// Initialize variables
+$email = $password = "";
+$email_err = $password_err = $login_err = "";
+
+// Check if user is already logged in
+if (isLoggedIn()) {
+    header("Location: dashboard.php");
+    exit;
+}
+
+// Process form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // Validate email/username
+    if (empty(trim($_POST["email"]))) {
+        $email_err = "Please enter email or username.";
+    } else {
+        $email = trim($_POST["email"]);
+    }
+    
+    // Validate password
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter your password.";
+    } else {
+        $password = trim($_POST["password"]);
+    }
+    
+    // Check input errors before authenticating
+    if (empty($email_err) && empty($password_err)) {
+        // Attempt to authenticate
+        $result = authenticateUser($email, $password);
+        
+        if ($result['success']) {
+            startUserSession($result);
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            // Authentication failed
+            $login_err = $result['message'];
+        }
+    }
+}
+?>
+<!DOCTYPE html>
 <html>
   <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
@@ -9,7 +65,7 @@
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
     />
 
-    <title>Ayera</title>
+    <title>Ayera - Login</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -17,11 +73,11 @@
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <!-- Added header similar to the one in register.php -->
+        <!-- Header -->
         <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
           <div class="flex items-center gap-4 text-[#0e141b]">
-            <!-- Made Ayera logo clickable to return to index.php -->
-            <a href="index.php" class="flex items-center gap-4">
+            <!-- Logo link to index -->
+            <a href="../index.php" class="flex items-center gap-4">
               <div class="size-4">
                 <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -40,7 +96,7 @@
             </a>
           </div>
           <div class="flex flex-1 justify-end gap-4">
-            <!-- Added register.php link to Sign up button -->
+            <!-- Register button -->
             <a href="register.php">
               <button
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
@@ -50,7 +106,7 @@
             </a>
           </div>
         </header>
-        <!-- Modified container to center content -->
+        <!-- Content container -->
         <div class="flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col items-center w-[512px] max-w-[512px] py-5 flex-1">
             <div class="@container w-full">
@@ -69,7 +125,7 @@
                       Report and find lost items at your university
                     </h2>
                   </div>
-                  <!-- Added register.php link to Sign up button -->
+                  <!-- Sign up button -->
                   <a href="register.php">
                     <button
                       class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#2c90e2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
@@ -80,38 +136,54 @@
                 </div>
               </div>
             </div>
-            <!-- Login form section with centered alignment -->
+            <!-- Login form section -->
             <div class="w-full">
               <h1 class="text-[#111517] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">Log in</h1>
-              <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
-                <label class="flex flex-col min-w-40 flex-1">
-                  <p class="text-[#111517] text-base font-medium leading-normal pb-2">Username or email</p>
-                  <input
-                    placeholder="yourusername@school.edu"
-                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
-                    value=""
-                  />
-                </label>
-              </div>
-              <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
-                <label class="flex flex-col min-w-40 flex-1">
-                  <p class="text-[#111517] text-base font-medium leading-normal pb-2">Password</p>
-                  <input
-                    placeholder="Your password"
-                    type="password"
-                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
-                    value=""
-                  />
-                </label>
-              </div>
-              <p class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot password?</p>
-              <div class="flex px-4 py-3 max-w-[480px] mx-auto">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Log in</span>
-                </button>
-              </div>
+              <?php 
+              if(!empty($login_err)){
+                  echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-4 mb-4" role="alert">' . $login_err . '</div>';
+              }        
+              ?>
+              <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
+                  <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#111517] text-base font-medium leading-normal pb-2">Username or email</p>
+                    <input
+                      name="email"
+                      placeholder="yourusername@school.edu"
+                      class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal <?php echo (!empty($email_err)) ? 'border-red-500' : ''; ?>"
+                      value="<?php echo $email; ?>"
+                    />
+                    <?php if(!empty($email_err)): ?>
+                      <span class="text-red-500 text-sm mt-1"><?php echo $email_err; ?></span>
+                    <?php endif; ?>
+                  </label>
+                </div>
+                <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
+                  <label class="flex flex-col min-w-40 flex-1">
+                    <p class="text-[#111517] text-base font-medium leading-normal pb-2">Password</p>
+                    <input
+                      name="password"
+                      placeholder="Your password"
+                      type="password"
+                      class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal <?php echo (!empty($password_err)) ? 'border-red-500' : ''; ?>"
+                      value=""
+                    />
+                    <?php if(!empty($password_err)): ?>
+                      <span class="text-red-500 text-sm mt-1"><?php echo $password_err; ?></span>
+                    <?php endif; ?>
+                  </label>
+                </div>
+                <p class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot password?</p>
+                <div class="flex px-4 py-3 max-w-[480px] mx-auto">
+                  <button
+                    type="submit"
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]"
+                  >
+                    <span class="truncate">Log in</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -119,4 +191,3 @@
     </div>
   </body>
 </html>
-<?php
