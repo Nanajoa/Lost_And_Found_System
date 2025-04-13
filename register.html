@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
       rel="stylesheet"
@@ -16,7 +17,7 @@
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-4 sm:px-10 py-3">
           <div class="flex items-center gap-4 text-[#0e141b]">
             <!-- Made Ayera logo clickable to return to index.html -->
             <a href="index.html" class="flex items-center gap-4">
@@ -49,14 +50,14 @@
           </div>
         </header>
         <div class="flex flex-1 justify-center py-5">
-          <!-- Centered the content -->
-          <div class="layout-content-container flex flex-col items-center w-[512px] max-w-[512px] py-5 flex-1">
-            <h2 class="text-[#0e141b] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Finders Keepers</h2>
-            <p class="text-[#0e141b] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
+          <!-- Made content container responsive -->
+          <div class="layout-content-container flex flex-col items-center w-full max-w-[512px] px-4 md:px-0 py-5 flex-1">
+            <h2 class="text-[#0e141b] tracking-light text-xl sm:text-2xl md:text-[28px] font-bold leading-tight text-center pb-3 pt-5">Finders Keepers</h2>
+            <p class="text-[#0e141b] text-sm sm:text-base font-normal leading-normal pb-3 pt-1 text-center">
               Create an account to report lost items or to search for items you've found.
             </p>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 w-full">
-              <label class="flex flex-col min-w-40 flex-1">
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3 w-full">
+              <label class="flex flex-col min-w-0 w-full">
                 <p class="text-[#0e141b] text-base font-medium leading-normal pb-2">Username</p>
                 <input
                   placeholder="Choose a username"
@@ -65,8 +66,8 @@
                 />
               </label>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 w-full">
-              <label class="flex flex-col min-w-40 flex-1">
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3 w-full">
+              <label class="flex flex-col min-w-0 w-full">
                 <p class="text-[#0e141b] text-base font-medium leading-normal pb-2">Email address</p>
                 <input
                   placeholder="you@example.com"
@@ -75,8 +76,8 @@
                 />
               </label>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 w-full">
-              <label class="flex flex-col min-w-40 flex-1">
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3 w-full">
+              <label class="flex flex-col min-w-0 w-full">
                 <p class="text-[#0e141b] text-base font-medium leading-normal pb-2">Password</p>
                 <input
                   placeholder="Create a password"
@@ -86,8 +87,8 @@
                 />
               </label>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 w-full">
-              <label class="flex flex-col min-w-40 flex-1">
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3 w-full">
+              <label class="flex flex-col min-w-0 w-full">
                 <p class="text-[#0e141b] text-base font-medium leading-normal pb-2">Re-enter password</p>
                 <input
                   placeholder="Enter your password again"
@@ -97,12 +98,16 @@
                 />
               </label>
             </div>
-            <div class="flex px-4 py-3 max-w-[480px] w-full">
+            <div class="flex py-3 max-w-[480px] w-full">
               <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 flex-1 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 sm:h-10 px-4 flex-1 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <span class="truncate">Create account</span>
               </button>
+            </div>
+            <!-- Added login link for mobile -->
+            <div class="flex justify-center py-4 w-full text-sm sm:hidden">
+              <p class="text-[#4e7397]">Already have an account? <a href="login.html" class="text-[#308ce8] font-medium">Sign in</a></p>
             </div>
           </div>
         </div>
