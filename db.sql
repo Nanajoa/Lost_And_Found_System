@@ -39,12 +39,14 @@ CREATE TABLE LostItems (
     found_status ENUM('pending', 'resolved') NOT NULL DEFAULT 'pending',
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
-    image LONGBLOB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    -- Foreign keys not enforced due to polymorphic user_type (handled in app logic)
+    image_path VARCHAR(255), -- Store file path for the image
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP NULL, -- Timestamp for when the item is resolved
+    FOREIGN KEY (user_id) REFERENCES Students(id) ON DELETE CASCADE
+    -- Foreign key for staff would need to be handled separately in app logic if polymorphic user_type is needed
 );
 
--- Claim entity
+-- Claims entity
 CREATE TABLE Claims (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -52,16 +54,27 @@ CREATE TABLE Claims (
     lost_item_id INT NOT NULL,
     date_claimed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    claim_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Track when the claim was made
     FOREIGN KEY (lost_item_id) REFERENCES LostItems(id) ON DELETE CASCADE
-    -- Foreign key for user_id omitted due to polymorphism
+    -- Foreign key for user_id omitted due to polymorphism (handled by user_type)
 );
 
--- Notification entity
+-- Notifications entity
 CREATE TABLE Notifications (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
     message TEXT NOT NULL,
-    date_sent TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    -- Foreign key for user_id omitted due to polymorphism
+    date_sent TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read_status ENUM('unread', 'read') NOT NULL DEFAULT 'unread', -- Track if notification is read or not
+    FOREIGN KEY (user_id) REFERENCES Students(id) ON DELETE CASCADE
+    -- Foreign key for staff would need to be handled separately in app logic if polymorphic user_type is needed
+);
+
+-- Returned items entity
+CREATE TABLE ReturnedItems (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    lost_item_id INT NOT NULL,
+    returned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lost_item_id) REFERENCES LostItems(id) ON DELETE CASCADE
 );

@@ -1,7 +1,7 @@
 <?php
 // Database configuration
 $host = 'localhost';       // XAMPP default host
-$db   = 'lost_and_found';  // Replace with your actual database name
+$db   = '';  // Replace with your actual database name
 $user = 'root';            // XAMPP default user
 $pass = '';                // XAMPP default has no password (unless you set one)
 $charset = 'utf8mb4';      // Character set
