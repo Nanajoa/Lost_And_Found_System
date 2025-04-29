@@ -3,11 +3,11 @@
 echo "PHP Version: " . phpversion() . "<br>";
 echo "MySQL Extension Loaded: " . (extension_loaded('mysqli') ? 'Yes' : 'No') . "<br>";
 
-// Detailed MySQL Connection Diagnostics
+// MySQL Connection Diagnostics
 $servername = 'localhost';  
 $username = 'root';           
 $password = '';
-$dbname = 'lost_and_found';   // ← this must match your phpMyAdmin DB name              
+$dbname = 'lost_and_found';   // ← this name should the DB in your phpMyAdmin
 
 try {
     // Test basic connection without specifying database
