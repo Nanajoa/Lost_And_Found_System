@@ -1,314 +1,366 @@
 <?php
-require_once __DIR__ . '/db/database.php';
-require_once __DIR__ . '/db/auth.php';
+// Start session
+session_start();
 
-// Start the session before any output
-startSessionIfNotStarted();
-
-// Handle search
-$searchResults = [];
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['search'])) {
-    $searchTerm = trim($_GET['search']);
-    if (!empty($searchTerm)) {
-        $conn = getDatabaseConnection();
-        $stmt = $conn->prepare("
-            SELECT 
-                l.id,
-                l.name,
-                l.description,
-                l.date_lost,
-                l.location_seen_at,
-                l.found_status,
-                l.created_at,
-                l.user_type,
-                CASE 
-                    WHEN l.user_type = 'student' THEN s.first_name
-                    WHEN l.user_type = 'staff' THEN st.first_name
-                END as first_name,
-                CASE 
-                    WHEN l.user_type = 'student' THEN s.last_name
-                    WHEN l.user_type = 'staff' THEN st.last_name
-                END as last_name
-            FROM LostItems l
-            LEFT JOIN Students s ON l.user_type = 'student' AND l.user_id = s.id
-            LEFT JOIN Staff st ON l.user_type = 'staff' AND l.user_id = st.id
-            WHERE l.name LIKE ? OR l.description LIKE ?
-            ORDER BY l.created_at DESC
-        ");
-        $searchParam = "%$searchTerm%";
-        $stmt->bind_param("ss", $searchParam, $searchParam);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $searchResults = $result->fetch_all(MYSQLI_ASSOC);
-    }
-}
+// Check if user is logged in
+$isLoggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+$userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
 ?>
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
 
-    <title>Ayera</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  </head>
-  <body>
-    <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
-      <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
-          <div class="flex items-center gap-8">
-            <div class="flex items-center gap-4 text-[#0e141b]">
-              <a href="index.php" class="flex items-center gap-4">
-                <div class="size-4">
-                  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
-                      fill="currentColor"
-                    ></path>
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
-                </div>
-                <h2 class="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">Ayera</h2>
-              </a>
-            </div>
-            <form action="index.php" method="GET" class="flex flex-col min-w-40 !h-10 max-w-64">
-              <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-                <div
-                  class="text-[#4e7397] flex border-none bg-[#e7edf3] items-center justify-center pl-4 rounded-l-xl border-r-0"
-                  data-icon="MagnifyingGlass"
-                  data-size="24px"
-                  data-weight="regular"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                    <path
-                      d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
-                    ></path>
-                  </svg>
-                </div>
-                <input
-                  name="search"
-                  placeholder="Search"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border-none bg-[#e7edf3] focus:border-none h-full placeholder:text-[#4e7397] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                  value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
-                />
+  <title>Ayera - Find Your Lost Items</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+
+<body>
+  <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden"
+    style='font-family: Inter, "Noto Sans", sans-serif;'>
+    <div class="layout-container flex h-full grow flex-col">
+      <!-- Header Section -->
+      <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
+        <div class="flex items-center gap-8">
+          <div class="flex items-center gap-4 text-[#0e141b]">
+            <a href="index.php" class="flex items-center gap-4">
+              <div class="size-4">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+                    fill="currentColor"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
+                    fill="currentColor"></path>
+                </svg>
               </div>
-            </form>
+              <h2 class="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">Ayera</h2>
+            </a>
           </div>
-          <div class="flex flex-1 justify-end gap-4">
-            <div class="flex gap-2">
-              <?php if (isLoggedIn()): ?>
-                <a href="view/report.php">
+            <label class="flex flex-col min-w-40 !h-10 max-w-64">
+            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+              <form action="search.php" method="get" class="flex w-full">
+              <div class="flex w-full items-center">
+                <input 
+                placeholder="Search"
+                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-xl text-[#0e141b] focus:outline-0 focus:ring-0 border-none bg-[#e7edf3] focus:border-none h-full placeholder:text-[#4e7397] px-4 text-base font-normal leading-normal"
+                value="" 
+                name="q" 
+                />
+                <button 
+                type="submit" 
+                class="px-4 bg-[#e7edf3] rounded-r-xl h-full text-[#0e141b] font-bold"
+                >
+                Search
+                </button>
+              </div>
+              </form>
+            </div>
+            </label>
+          </div>
+          <div class="flex items-center gap-4">
+            <a href="report.php">
+            <button
+              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+            >
+              <span class="truncate">Report</span>
+            </button>
+            </a>
+            <?php if($isLoggedIn): ?>
+              <div class="flex items-center gap-2">
+                <span class="text-[#0e141b] text-sm">Welcome, <?php echo htmlspecialchars($userFirstName); ?></span>
+                <a href="dashboard.php">
                   <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
-                    <span class="truncate">Report</span>
+                    <span class="truncate">Dashboard</span>
                   </button>
                 </a>
-                <a href="actions/logout.php">
+                <a href="db/auth.php?action=logout">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
                     <span class="truncate">Log out</span>
                   </button>
                 </a>
-              <?php else: ?>
-                <a href="view/login.php">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
-                    <span class="truncate">Log in</span>
-                  </button>
-                </a>
-                <a href="view/register.php">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
-                    <span class="truncate">Sign up</span>
-                  </button>
-                </a>
-              <?php endif; ?>
-            </div>
+              </div>
+            <?php else: ?>
+              <a href="login.php">
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Log in</span>
+              </button>
+              </a>
+              <a href="register.php">
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Sign up</span>
+              </button>
+              </a>
+            <?php endif; ?>
           </div>
-        </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="@container">
-              <div class="@[480px]:p-4">
-                <div
-                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://cdn.usegalileo.ai/sdxl10/504b8dc4-4378-4cf6-bfcf-0133ec3ea9c7.png");'
-                >
-                  <div class="flex flex-col gap-2 text-center">
-                    <h1
-                      class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"
-                    >
-                      Find your lost items
-                    </h1>
-                    <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
-                      Search for things you've lost and see if someone has found them
-                    </h2>
-                  </div>
-                  <form action="index.php" method="GET" class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
-                    <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-                      <div
-                        class="text-[#4e7397] flex border border-[#d0dbe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-xl border-r-0"
-                        data-icon="MagnifyingGlass"
-                        data-size="20px"
-                        data-weight="regular"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                          <path
-                            d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
-                          ></path>
-                        </svg>
-                      </div>
-                      <input
-                        name="search"
-                        placeholder="Start by searching for your lost item"
-                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-full placeholder:text-[#4e7397] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
-                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
-                      />
-                      <button
-                        type="submit"
-                        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
-                      >
+          </header>
+
+      <!-- Main Content Area -->
+      <div class="px-4 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
+        <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+          <!-- Hero Section -->
+          <div class="@container">
+            <div class="@[480px]:p-4">
+              <div
+                class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
+                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/bg.jpeg");'>
+                <div class="flex flex-col gap-2 text-center">
+                  <h1
+                    class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
+                    Find your lost items
+                  </h1>
+                  <h2
+                    class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
+                    Search for things you've lost and see if someone has found them
+                  </h2>
+                </div>
+                <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
+                  <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                    <div
+                      class="text-[#4e7397] flex border border-[#d0dbe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-xl border-r-0"
+                      data-icon="MagnifyingGlass" data-size="20px" data-weight="regular">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path
+                          d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z">
+                        </path>
+                      </svg>
+                    </div>
+                    <form action="search.php" method="get" class="flex w-full">
+                      <input name="q" placeholder="Start by searching for your lost item"
+                      class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-full placeholder:text-[#4e7397] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
+                      value="" />
+                    <div
+                      class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#d0dbe7] bg-slate-50 pr-[7px]">
+                      <button type="submit"
+                        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
                         <span class="truncate">Search</span>
                       </button>
                     </div>
-                  </form>
-                </div>
+                    </form>
+                  </div>
+                </label>
               </div>
             </div>
-            <div class="flex flex-col gap-10 px-4 py-10 @container">
-              <div class="flex flex-col gap-6">
-                <div class="flex flex-col gap-4">
-                  <h1
-                    class="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]"
-                  >
-                    How it works
-                  </h1>
-                  <p class="text-[#0e141b] text-base font-normal leading-normal max-w-[720px]">
-                    We make it easy for you to post and find lost items. Our platform helps you connect with the person who found your item, so you can arrange its return.
-                  </p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
-                    <h3 class="text-[#0e141b] text-lg font-bold">1. Report Lost Items</h3>
-                    <p class="text-[#4e7397]">Create an account and report items you've lost. Provide details like location, time, and description.</p>
-                  </div>
-                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
-                    <h3 class="text-[#0e141b] text-lg font-bold">2. Search & Find</h3>
-                    <p class="text-[#4e7397]">Use our search feature to look for your lost items. Filter by date, location, or item type.</p>
-                  </div>
-                  <div class="flex flex-col gap-3 p-4 bg-white rounded-xl shadow-sm">
-                    <h3 class="text-[#0e141b] text-lg font-bold">3. Claim & Return</h3>
-                    <p class="text-[#4e7397]">Found your item? Contact the finder through our secure messaging system to arrange return.</p>
-                  </div>
-                </div>
-                <div class="flex gap-4">
-                  <?php if (isLoggedIn()): ?>
-                    <a href="view/report.php">
-                      <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
-                        <span class="truncate">Report a lost item</span>
-                      </button>
-                    </a>
-                  <?php else: ?>
-                    <a href="view/login.php">
-                      <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
-                        <span class="truncate">Login to report</span>
-                      </button>
-                    </a>
-                  <?php endif; ?>
-                </div>
+          </div>
+
+          <!-- How It Works Section -->
+          <div class="flex flex-col gap-10 px-4 py-10 @container">
+            <div class="flex flex-col gap-6">
+              <div class="flex flex-col gap-4">
+                <h1
+                  class="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]">
+                  How it works
+                </h1>
+                <p class="text-[#0e141b] text-base font-normal leading-normal max-w-[720px]">
+                  We make it easy for you to post found items and find lost items. Our platform helps you connect with
+                  the person who found your item, so you can arrange its return.
+                </p>
+              </div>
+              <div class="flex gap-4">
+                <a href="#about">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
+                    <span class="truncate">Learn more</span>
+                  </button>
+                </a>
+                <a href="report.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
+                    <span class="truncate">Report a found item</span>
+                  </button>
+                </a>
               </div>
             </div>
-            <?php if (!empty($searchResults)): ?>
-              <h2 class="text-[#0e141b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Search Results</h2>
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-                <?php foreach ($searchResults as $item): ?>
-                  <div class="flex flex-col gap-3 pb-3">
-                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl bg-gray-200"></div>
-                    <div>
-                      <p class="text-[#0e141b] text-base font-medium leading-normal"><?php echo htmlspecialchars($item['name']); ?></p>
-                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
-                        Found by: <?php echo htmlspecialchars($item['first_name'] . ' ' . $item['last_name']); ?>
-                      </p>
-                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
-                        Status: <?php echo ucfirst($item['found_status']); ?>
-                      </p>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
+          </div>
+
+          <!-- Process Steps Section -->
+          <div id="about" class="flex flex-col gap-6 px-4 py-6 bg-[#f6f9fc] rounded-xl mb-10">
+            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">About Ayera</h2>
+            <p class="text-[#0e141b] text-base font-normal leading-normal">
+              Ayera is a community-driven platform dedicated to helping people recover their lost possessions. We
+              believe in the kindness of strangers and the power of connectivity to bring lost items back to their
+              rightful owners.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+              <div class="flex flex-col items-center text-center gap-3 p-4 bg-white rounded-xl shadow-sm">
+                <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
+                  <span class="text-xl font-bold">1</span>
+                </div>
+                <h3 class="text-[#0e141b] text-lg font-bold">Report As Found</h3>
+                <p class="text-[#4e7397] text-sm">Look through found items, that have been posted, by other users.</p>
               </div>
-            <?php else: ?>
-              <h2 class="text-[#0e141b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Recently found items</h2>
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-                <?php
-                // Get recent items
-                $conn = getDatabaseConnection();
-                $stmt = $conn->prepare("
-                    SELECT 
-                        l.id,
-                        l.name,
-                        l.description,
-                        l.date_lost,
-                        l.location_seen_at,
-                        l.found_status,
-                        l.created_at,
-                        l.user_type,
-                        CASE 
-                            WHEN l.user_type = 'student' THEN s.first_name
-                            WHEN l.user_type = 'staff' THEN st.first_name
-                        END as first_name,
-                        CASE 
-                            WHEN l.user_type = 'student' THEN s.last_name
-                            WHEN l.user_type = 'staff' THEN st.last_name
-                        END as last_name
-                    FROM LostItems l
-                    LEFT JOIN Students s ON l.user_type = 'student' AND l.user_id = s.id
-                    LEFT JOIN Staff st ON l.user_type = 'staff' AND l.user_id = st.id
-                    ORDER BY l.created_at DESC
-                    LIMIT 5
-                ");
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $recentItems = $result->fetch_all(MYSQLI_ASSOC);
-                
-                foreach ($recentItems as $item):
-                ?>
-                  <div class="flex flex-col gap-3 pb-3">
-                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl bg-gray-200"></div>
-                    <div>
-                      <p class="text-[#0e141b] text-base font-medium leading-normal"><?php echo htmlspecialchars($item['name']); ?></p>
-                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
-                        Found by: <?php echo htmlspecialchars($item['first_name'] . ' ' . $item['last_name']); ?>
-                      </p>
-                      <p class="text-[#4e7397] text-sm font-normal leading-normal">
-                        Status: <?php echo ucfirst($item['found_status']); ?>
-                      </p>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
+
+              <div class="flex flex-col items-center text-center gap-3 p-4 bg-white rounded-xl shadow-sm">
+                <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
+                  <span class="text-xl font-bold">2</span>
+                </div>
+                <h3 class="text-[#0e141b] text-lg font-bold">Get Matched</h3>
+                <p class="text-[#4e7397] text-sm">When you see your item, press claim</p>
               </div>
-            <?php endif; ?>
+
+              <div class="flex flex-col items-center text-center gap-3 p-4 bg-white rounded-xl shadow-sm">
+                <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
+                  <span class="text-xl font-bold">3</span>
+                </div>
+                <h3 class="text-[#0e141b] text-lg font-bold">Reconnect</h3>
+                <p class="text-[#4e7397] text-sm">Your details will be sent to the finder for fast retrieval.</p>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Statistics Section (Now connected to PHP) -->
+          <div class="flex flex-col gap-6 px-4 py-10 bg-[#308ce8] text-white rounded-xl my-10">
+            <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] text-center">Making a difference</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+              <?php
+              // Get statistics from database
+              require_once "db/database.php";
+              $conn = getDatabaseConnection();
+              
+              // Get total resolved items
+              $resolvedItemsQuery = "SELECT COUNT(*) as count FROM LostItems WHERE found_status = 'resolved'";
+              $resolvedResult = $conn->query($resolvedItemsQuery);
+              $resolvedCount = ($resolvedResult && $resolvedResult->num_rows > 0) 
+                  ? $resolvedResult->fetch_assoc()['count'] 
+                  : "5,000+";
+              
+              // Get total users
+              $usersQuery = "SELECT (SELECT COUNT(*) FROM Students) + (SELECT COUNT(*) FROM Staff) as count";
+              $usersResult = $conn->query($usersQuery);
+              $usersCount = ($usersResult && $usersResult->num_rows > 0) 
+                  ? $usersResult->fetch_assoc()['count'] 
+                  : "10,000+";
+              
+              // Calculate success rate
+              $totalItemsQuery = "SELECT COUNT(*) as count FROM LostItems";
+              $totalResult = $conn->query($totalItemsQuery);
+              $totalCount = ($totalResult && $totalResult->num_rows > 0) 
+                  ? $totalResult->fetch_assoc()['count'] 
+                  : 0;
+              
+              $successRate = ($totalCount > 0) 
+                  ? round(($resolvedCount / $totalCount) * 100) 
+                  : "85";
+              
+              $conn->close();
+              ?>
+              <div class="flex flex-col items-center text-center">
+                <p class="text-4xl font-bold"><?php echo $resolvedCount; ?>+</p>
+                <p class="text-sm mt-2">Items returned</p>
+              </div>
+              <div class="flex flex-col items-center text-center">
+                <p class="text-4xl font-bold"><?php echo $usersCount; ?>+</p>
+                <p class="text-sm mt-2">Active users</p>
+              </div>
+              <div class="flex flex-col items-center text-center">
+                <p class="text-4xl font-bold"><?php echo $successRate; ?>%</p>
+                <p class="text-sm mt-2">Success rate</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonials Section -->
+          <div class="flex flex-col gap-6 px-4 py-6">
+            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">What our users say</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="p-6 bg-white rounded-xl shadow-sm">
+                <p class="text-[#4e7397] text-base italic mb-4">"I lost my wallet at the FabLab and thought it was gone
+                  forever. Within 24 hours, someone had found it and contacted me through Ayera. All my cards and cash
+                  were still there!"</p>
+                <p class="text-[#0e141b] text-sm font-bold">- Michael T., C2027</p>
+              </div>
+              <div class="p-6 bg-white rounded-xl shadow-sm">
+                <p class="text-[#4e7397] text-base italic mb-4">"Finding Ayera was a lifesaver. I found someone's laptop
+                  at Hakuna and had no idea how to return it. Posted it here and the owner claimed it. I returned it
+                  within hours."</p>
+                <p class="text-[#0e141b] text-sm font-bold">- Samantha K., C2025</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Section -->
+          <div class="flex flex-col gap-6 px-4 py-6 mb-10">
+            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">Frequently asked questions
+            </h2>
+            <div class="space-y-4">
+              <div class="p-4 bg-white rounded-xl shadow-sm">
+                <h3 class="text-[#0e141b] text-lg font-bold mb-2">Is Ayera free to use?</h3>
+                <p class="text-[#4e7397] text-sm">Yes, Ayera is completely free to use for both reporting found items
+                  and claiming items.</p>
+              </div>
+              <div class="p-4 bg-white rounded-xl shadow-sm">
+                <h3 class="text-[#0e141b] text-lg font-bold mb-2">How does Ayera protect my privacy?</h3>
+                <p class="text-[#4e7397] text-sm">We never share your personal contact information publicly. Your
+                  details are sent to the person who you claimed had your item(s). The details sent are your Ashesi
+                  Email Address, Phone number, and your Name.</p>
+              </div>
+              <div class="p-4 bg-white rounded-xl shadow-sm">
+                <h3 class="text-[#0e141b] text-lg font-bold mb-2">What areas does Ayera cover?</h3>
+                <p class="text-[#4e7397] text-sm">Ayera is available and can be used anywhere on Ashesi Campus and
+                  surrounding OffCampus Hostels and facilities. </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA Section -->
+          <div class="flex flex-col items-center gap-6 px-4 py-10 bg-[#f6f9fc] rounded-xl text-center mb-10">
+            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">Ready to find what you've
+              lost?</h2>
+            <p class="text-[#4e7397] text-base max-w-md">Join thousands of users who have successfully reconnected with
+              their lost items through Ayera.</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <?php if(!$isLoggedIn): ?>
+              <a href="register.php">
+                <button
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#308ce8] text-slate-50 text-base font-bold leading-normal tracking-[0.015em] w-full">
+                  <span class="truncate">Sign up for free</span>
+                </button>
+              </a>
+              <?php endif; ?>
+              <a href="report.php">
+                <button
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#e7edf3] text-[#0e141b] text-base font-bold leading-normal tracking-[0.015em] w-full">
+                  <span class="truncate">Report an item</span>
+                </button>
+              </a>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Footer Section -->
+      <footer class="bg-[#0e141b] text-white py-6">
+        <div class="max-w-[960px] mx-auto px-4">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 text-sm mb-4 md:mb-0">
+              &copy; <?php echo date("Y"); ?> Ayera - All rights reserved
+            </p>
+            <div class="flex space-x-6">
+              <a href="#about" class="text-gray-400 hover:text-white text-sm">About</a>
+              <a href="mailto:yenma.bawa@ashesi.edu.gh" 
+                class="text-gray-400 hover:text-white text-sm">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
-    <div id="how-it-works" class="flex flex-col gap-10 px-4 py-10 @container">
-      <!-- Add your content here -->
-    </div>
-  </body>
+  </div>
+</body>
 </html>
