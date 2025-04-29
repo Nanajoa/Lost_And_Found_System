@@ -6,11 +6,12 @@ echo "MySQL Extension Loaded: " . (extension_loaded('mysqli') ? 'Yes' : 'No') . 
 // Detailed MySQL Connection Diagnostics
 $servername = 'localhost';  
 $username = 'root';           
-$password = '';              
+$password = '';
+$dbname = 'lost_and_found';   // ← this must match your phpMyAdmin DB name              
 
 try {
     // Test basic connection without specifying database
-    $conn = new mysqli($servername, $username, $password);
+    $conn = new mysqli($servername, $username, $password, $database);
 
     if ($conn->connect_errno) {
         throw new Exception("Basic Connection failed: " . $conn->connect_error);
