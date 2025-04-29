@@ -364,3 +364,5 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
   </div>
 </body>
 </html>
+
+
