@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+
+  <title>Ayera Admin - Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+
+<body>
+  <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden"
+    style='font-family: Inter, "Noto Sans", sans-serif;'>
+    
+    <!-- Side Navigation -->
+    <div class="flex h-full grow">
+      <div class="w-64 h-screen bg-[#0e141b] fixed">
+        <div class="flex items-center gap-4 p-6 border-b border-gray-700">
+          <div class="size-6 text-white">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+                fill="currentColor"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
+                fill="currentColor"></path>
+            </svg>
+          </div>
+          <h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Ayera Admin</h2>
+        </div>
+        
+        <nav class="mt-6">
+          <div class="px-4 mb-2">
+            <p class="text-gray-400 text-xs uppercase font-semibold">Management</p>
+          </div>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-white bg-[#308ce8]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"></path>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+            </svg>
+            <span>Users</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+            </svg>
+            <span>Items</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path>
+            </svg>
+            <span>Reports</span>
+          </a>
+          
+          <div class="px-4 mt-6 mb-2">
+            <p class="text-gray-400 text-xs uppercase font-semibold">System</p>
+          </div>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M128,40a64.07,64.07,0,0,0-64,64v48a64,64,0,0,0,128,0V104A64.07,64.07,0,0,0,128,40Zm48,112a48,48,0,0,1-96,0V104a48,48,0,0,1,96,0Zm-24-64a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h32A8,8,0,0,1,152,88Zm0,32a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h32A8,8,0,0,1,152,120Zm0,32a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h32A8,8,0,0,1,152,152Z"></path>
+            </svg>
+            <span>Notifications</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M200,32H163.74a47.92,47.92,0,0,0-71.48,0H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm-72,0a32,32,0,0,1,32,32H96A32,32,0,0,1,128,32Zm72,176H56V48H82.75A47.93,47.93,0,0,0,80,64v8a8,8,0,0,0,8,8h80a8,8,0,0,0,8-8V64a47.93,47.93,0,0,0-2.75-16H200Z"></path>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </nav>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+          <a href="#" class="flex items-center gap-3 text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"></path>
+            </svg>
+            <span>Logout</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Main Content Area -->
+      <div class="ml-64 flex-1">
+        <!-- Header -->
+        <header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
+          <h1 class="text-[#0e141b] text-xl font-bold">Dashboard</h1>
+          
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-[#4e7397]" viewBox="0 0 256 256">
+                <path d="M221.8,175.94C216.25,166.38,208,139.31,208,104a80,80,0,1,0-160,0c0,35.31-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.08,8.3,66.76,16,80Z"></path>
+              </svg>
+              <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+            </div>
+            
+            <div class="w-px h-6 bg-gray-200"></div>
+            
+            <div class="flex items-center gap-3">
+              <div class="size-8 rounded-full bg-[#308ce8] flex items-center justify-center text-white font-bold">
+                A
+              </div>
+              <span class="text-[#0e141b] font-medium">Admin</span>
+            </div>
+          </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="p-6">
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[#4e7397] text-sm font-medium">Total Items</h3>
+                <div class="bg-blue-100 p-2 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-[#308ce8]" viewBox="0 0 256 256">
+                    <path d="M224,177.3V78.7a8.1,8.1,0,0,0-4.1-7l-88-49.5a7.93,7.93,0,0,0-7.8,0l-88,49.5a8.1,8.1,0,0,0-4.1,7v98.6a8.1,8.1,0,0,0,4.1,7l88,49.5a7.93,7.93,0,0,0,7.8,0l88-49.5A8.1,8.1,0,0,0,224,177.3ZM128,34.8,207.9,78,128,121.2,48.1,78ZM40,87l80,45v84.9l-80-45Zm96,129.9V132l80-45v84.9Z"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 class="text-[#0e141b] text-2xl font-bold">248</h2>
+              <p class="text-green-500 text-sm mt-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+                <span class="ml-1">12% increase</span>
+              </p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[#4e7397] text-sm font-medium">Found Items</h3>
+                <div class="bg-green-100 p-2 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-green-500" viewBox="0 0 256 256">
+                    <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 class="text-[#0e141b] text-2xl font-bold">186</h2>
+              <p class="text-green-500 text-sm mt-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+                <span class="ml-1">8% increase</span>
+              </p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[#4e7397] text-sm font-medium">Claimed Items</h3>
+                <div class="bg-orange-100 p-2 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-orange-500" viewBox="0 0 256 256">
+                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-68a28,28,0,0,1-28,28H112a8,8,0,0,1,0-16h28a12,12,0,0,0,0-24H120a28,28,0,0,1,0-56h28a8,8,0,0,1,0,16H120a12,12,0,0,0,0,24h20A28,28,0,0,1,168,148Z"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 class="text-[#0e141b] text-2xl font-bold">152</h2>
+              <p class="text-green-500 text-sm mt-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+                <span class="ml-1">5% increase</span>
+              </p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[#4e7397] text-sm font-medium">Users</h3>
+                <div class="bg-purple-100 p-2 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-500" viewBox="0 0 256 256">
+                    <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.94-14.85,60,60,0,0,1,55.53,105.64,95.83,95.83,0,0,1,47.22,37.71A8,8,0,0,1,250.14,206.7Z"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 class="text-[#0e141b] text-2xl font-bold">1,245</h2>
+              <p class="text-green-500 text-sm mt-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+                <span class="ml-1">18% increase</span>
+              </p>
+            </div>
+          </div>
+          
+          <!-- Recent Items Table -->
+          <div class="bg-white rounded-xl shadow-sm mb-6">
+            <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+              <h2 class="text-[#0e141b] text-lg font-bold">Recent Items</h2>
+              <button class="text-[#308ce8] text-sm font-medium">View All</button>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="text-left text-[#4e7397] text-sm border-b border-gray-200">
+                    <th class="font-medium px-6 py-3">Item ID</th>
+                    <th class="font-medium px-6 py-3">Name</th>
+                    <th class="font-medium px-6 py-3">Category</th>
+                    <th class="font-medium px-6 py-3">Location</th>
+                    <th class="font-medium px-6 py-3">Status</th>
+                    <th class="font-medium px-6 py-3">Date</th>
+                    <th class="font-medium px-6 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="px-6 py-4 text-[#0e141b]">#AY-2504</td>
+                    <td class="px-6 py-4 text-[#0e141b]">MacBook Pro</td>
+                    <td class="px-6 py-4 text-[#0e141b]">Electronics</td>
+                    <td class="px-6
