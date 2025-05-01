@@ -15,12 +15,13 @@
   <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden"
     style='font-family: Inter, "Noto Sans", sans-serif;'>
     <div class="layout-container flex h-full grow flex-col">
-      <!-- Added header similar to the one in register.html -->
+      <!-- Header -->
       <header
         class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
         <div class="flex items-center gap-4 text-[#0e141b]">
-          <!-- Made Ayera logo clickable to return to index.html -->
-          <a href="index.html" class="flex items-center gap-4">
+
+          <!-- Ayera Logo -->
+          <a href="../index.php" class="flex items-center gap-4">
             <div class="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -35,16 +36,16 @@
           </a>
         </div>
         <div class="flex flex-1 justify-end gap-4">
-          <!-- Added register.html link to Sign up button -->
-          <a href="register.html">
+          <!-- Link to Sign up page -->
+          <a href="register.php">
             <button
               class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]">
-              <span class="truncate">Sign up</span>
+              <span class="truncate">Sign Up</span>
             </button>
           </a>
         </div>
       </header>
-      <!-- Modified container to center content with increased width for the background -->
+      <!-- Background container -->
       <div class="flex flex-1 justify-center py-5">
         <div class="layout-content-container flex flex-col items-center w-[576px] max-w-[576px] py-5 flex-1">
           <div class="@container w-full">
@@ -62,8 +63,8 @@
             Report and find lost items at your university
           </h2>
             </div>
-            <!-- Added register.html link to Sign up button -->
-            <a href="register.html">
+            <!-- Added register.php link to Sign up button -->
+            <a href="register.php">
           <button
             class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#2c90e2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
             <span class="truncate">Sign up</span>

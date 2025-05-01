@@ -42,47 +42,18 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
               </div>
               <h2 class="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">Ayera</h2>
             </a>
-          </div>
-            <label class="flex flex-col min-w-40 !h-10 max-w-64">
-            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-              <form action="search.php" method="get" class="flex w-full">
-              <div class="flex w-full items-center">
-                <input 
-                placeholder="Search"
-                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-xl text-[#0e141b] focus:outline-0 focus:ring-0 border-none bg-[#e7edf3] focus:border-none h-full placeholder:text-[#4e7397] px-4 text-base font-normal leading-normal"
-                value="" 
-                name="q" 
-                />
-                <button 
-                type="submit" 
-                class="px-4 bg-[#e7edf3] rounded-r-xl h-full text-[#0e141b] font-bold"
-                >
-                Search
-                </button>
-              </div>
-              </form>
-            </div>
-            </label>
-          </div>
-          <div class="flex items-center gap-4">
-            <a href="/views/report.php">
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Report</span>
-            </button>
-            </a>
+
             <?php if($isLoggedIn): ?>
               <div class="flex items-center gap-2">
                 <span class="text-[#0e141b] text-sm">Welcome, <?php echo htmlspecialchars($userFirstName); ?></span>
-                <a href="./views/admin/dashboard.php">
+                <a href="views/admin/dashboard.php">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
                     <span class="truncate">Dashboard</span>
                   </button>
                 </a>
-                <a href="./db/auth.php?action=logout">
+                <a href="db/auth.php?action=logout">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
@@ -91,14 +62,14 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
                 </a>
               </div>
             <?php else: ?>
-              <a href="./views/login.php">
+              <a href="views/login.php">
               <button
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <span class="truncate">Log in</span>
               </button>
               </a>
-              <a href="./views/register.php">
+              <a href="views/register.php">
               <button
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
               >
@@ -172,13 +143,13 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
                 </p>
               </div>
               <div class="flex gap-4">
-                <a href="#about">
+                <a href="views/about.php">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
-                    <span class="truncate">Learn more</span>
+                    <span class="truncate">Learn More</span>
                   </button>
                 </a>
-                <a href="report.php">
+                <a href="views/report.php">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
                     <span class="truncate">Report a found item</span>
@@ -192,7 +163,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
           <div id="about" class="flex flex-col gap-6 px-4 py-6 bg-[#f6f9fc] rounded-xl mb-10">
             <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">About Ayera</h2>
             <p class="text-[#0e141b] text-base font-normal leading-normal">
-              Ayera is a community-driven platform dedicated to helping people recover their lost possessions. We
+              Ayera is an Ashesi student-body developped solution to facilitate the recovery process for lost items. We
               believe in the kindness of strangers and the power of connectivity to bring lost items back to their
               rightful owners.
             </p>
@@ -231,7 +202,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
               <?php
               // Get statistics from database
-              require_once "./db/database.php";
+              require_once "db/database.php";
               $conn = getDatabaseConnection();
               
               // Get total resolved items

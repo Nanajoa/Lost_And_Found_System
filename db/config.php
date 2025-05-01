@@ -1,30 +1,23 @@
 <?php
-// Check PHP MySQL Configuration
-echo "PHP Version: " . phpversion() . "<br>";
-echo "MySQL Extension Loaded: " . (extension_loaded('mysqli') ? 'Yes' : 'No') . "<br>";
+// New usage with DatabaseSingleton
 
-// MySQL Connection Diagnostics
-$servername = 'localhost';  
-$username = 'root';           
-$password = '';
-$dbname = 'lost_and_found';   // ← this name should the DB in your phpMyAdmin
+require_once '../patterns/DatabaseSingleton.php'; // Include the singleton class
 
-try {
-    // Test basic connection without specifying database
-    $conn = new mysqli($servername, $username, $password, $database);
+// Get the singleton instance
+$db = DatabaseSingleton::getInstance();
 
-    if ($conn->connect_errno) {
-        throw new Exception("Basic Connection failed: " . $conn->connect_error);
-    }
+// Get the database connection
+$conn = $db->getConnection();
 
-    // List available databases
-    $result = $conn->query("SHOW DATABASES");
-    echo "Available Databases:<br>";
+// Use $conn in your queries as before
+$query = "SELECT * FROM LostItems";
+$result = $conn->query($query);
+
+if ($result) {
     while ($row = $result->fetch_assoc()) {
-        echo $row['Database'] . "<br>";
+        echo $row['name'] . "<br>";
     }
-
-    $conn->close();
-} catch (Exception $e) {
-    die("Diagnostic Error: " . $e->getMessage());
+} else {
+    echo "No items found.";
 }
+?>
