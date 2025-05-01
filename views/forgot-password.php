@@ -16,7 +16,7 @@
     <!-- Header -->
     <header class="flex items-center justify-between border-b border-[#e7edf3] px-10 py-3">
       <div class="flex items-center gap-4 text-[#0e141b]">
-        <a href="login.html" class="flex items-center gap-4">
+        <a href="login.php" class="flex items-center gap-4">
           <div class="size-4">
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -52,7 +52,7 @@
         </form>
 
         <div class="mt-6 text-center text-sm">
-          <a href="login.html" class="text-[#2c90e2] hover:underline">← Back to login</a>
+          <a href="login.php" class="text-[#2c90e2] hover:underline">← Back to login</a>
         </div>
       </div>
     </main>

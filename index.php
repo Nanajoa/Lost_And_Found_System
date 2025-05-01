@@ -65,7 +65,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             </label>
           </div>
           <div class="flex items-center gap-4">
-            <a href="report.php">
+            <a href="/views/report.php">
             <button
               class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
             >
@@ -75,14 +75,14 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <?php if($isLoggedIn): ?>
               <div class="flex items-center gap-2">
                 <span class="text-[#0e141b] text-sm">Welcome, <?php echo htmlspecialchars($userFirstName); ?></span>
-                <a href="dashboard.php">
+                <a href="./views/admin/dashboard.php">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
                     <span class="truncate">Dashboard</span>
                   </button>
                 </a>
-                <a href="db/auth.php?action=logout">
+                <a href="./db/auth.php?action=logout">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
@@ -91,14 +91,14 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
                 </a>
               </div>
             <?php else: ?>
-              <a href="login.php">
+              <a href="./views/login.php">
               <button
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <span class="truncate">Log in</span>
               </button>
               </a>
-              <a href="register.php">
+              <a href="./views/register.php">
               <button
                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
               >
@@ -117,7 +117,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <div class="@[480px]:p-4">
               <div
                 class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/bg.jpeg");'>
+                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/../static/bg.jpeg");'>
                 <div class="flex flex-col gap-2 text-center">
                   <h1
                     class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
@@ -231,7 +231,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
               <?php
               // Get statistics from database
-              require_once "db/database.php";
+              require_once "./db/database.php";
               $conn = getDatabaseConnection();
               
               // Get total resolved items
@@ -327,17 +327,17 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
               their lost items through Ayera.</p>
             <div class="flex flex-col sm:flex-row gap-4">
               <?php if(!$isLoggedIn): ?>
-              <a href="register.php">
+              <a href="./views/register.php">
                 <button
                   class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#308ce8] text-slate-50 text-base font-bold leading-normal tracking-[0.015em] w-full">
-                  <span class="truncate">Sign up for free</span>
+                  <span class="truncate">Sign up</span>
                 </button>
               </a>
               <?php endif; ?>
-              <a href="report.php">
+              <a href="./views/report.php">
                 <button
                   class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#e7edf3] text-[#0e141b] text-base font-bold leading-normal tracking-[0.015em] w-full">
-                  <span class="truncate">Report an item</span>
+                  <span class="truncate">Report a missing item</span>
                 </button>
               </a>
             </div>

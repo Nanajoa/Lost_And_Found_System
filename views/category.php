@@ -18,11 +18,12 @@
   <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden"
     style='font-family: Inter, "Noto Sans", sans-serif;'>
     <div class="layout-container flex h-full grow flex-col">
+
       <!-- Header -->
       <header
         class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
         <div class="flex items-center gap-4 text-[#0e141b]">
-          <a href="index.html" class="flex items-center gap-4">
+          <a href="../index.php" class="flex items-center gap-4">
             <div class="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -37,10 +38,10 @@
           </a>
         </div>
         <div class="flex gap-6 items-center">
-          <a href="homepage.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
-          <a href="lost-items.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Lost Items</a>
-          <a href="found-items.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Found Items</a>
-          <a href="report-item.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Report Item</a>
+          <a href="../views/homepage.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
+          <a href="../views/lost-items.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Lost Items</a>
+          <a href="../found-items.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Found Items</a>
+          <a href="report-item.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Report Item</a>
           <div class="relative group">
             <button class="flex items-center gap-2">
               <img src="/api/placeholder/32/32" alt="Profile" class="w-8 h-8 rounded-full object-cover border-2 border-[#308ce8]" />

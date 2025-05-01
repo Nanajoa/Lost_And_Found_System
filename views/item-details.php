@@ -16,7 +16,7 @@
       <!-- Header -->
       <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
         <div class="flex items-center gap-4 text-[#0e141b]">
-          <a href="homepage.html" class="flex items-center gap-4">
+          <a href="homepage.php" class="flex items-center gap-4">
             <div class="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -31,7 +31,7 @@
           </a>
         </div>
         <div class="hidden md:flex space-x-6">
-          <a href="homepage.html" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
+          <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
           <a href="category.html" class="text-[#4e7397] hover:text-[#308ce8]">Browse Items</a>
           <a href="report.html" class="text-[#4e7397] hover:text-[#308ce8]">Report Item</a>
           <a href="about.html" class="text-[#4e7397] hover:text-[#308ce8]">About</a>
@@ -272,7 +272,7 @@
 
             <!-- Navigation Links -->
             <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-4 md:mb-0">
-              <a href="homepage.html" class="hover:underline hover:text-black">Home</a>
+              <a href="homepage.php" class="hover:underline hover:text-black">Home</a>
             </div>
 
             <!-- Social Media Icons -->

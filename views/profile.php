@@ -37,7 +37,7 @@
           </a>
         </div>
         <div class="flex gap-6 items-center">
-          <a href="homepage.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
+          <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
           <a href="lost-items.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Lost Items</a>
           <a href="found-items.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Found Items</a>
           <a href="report-item.html" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Report Item</a>

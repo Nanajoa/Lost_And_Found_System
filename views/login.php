@@ -51,7 +51,7 @@
         <div class="@[480px]:p-4">
           <div
             class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-start justify-end px-4 pb-10 @[480px]:px-10 w-full"
-            style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("login_bg.jpeg");'>
+            style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("login_../static/bg.jpeg");'>
             <div class="flex flex-col gap-2 text-left">
           <h1
             class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
@@ -94,7 +94,7 @@
             </div>
             <a href="forgot-password.html" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
 
-            <button onclick="window.location.href='homepage.html';"
+            <button onclick="window.location.href='homepage.php';"
               class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">
               <span class="truncate">Log in</span>
             </button>
