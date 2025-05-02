@@ -94,35 +94,14 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
                     class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
                     Find your lost items
                   </h1>
-                  <h2
-                    class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
-                    Search for things you've lost and see if someone has found them
-                  </h2>
+
                 </div>
                 <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
                   <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
                     <div
                       class="text-[#4e7397] flex border border-[#d0dbe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-xl border-r-0"
                       data-icon="MagnifyingGlass" data-size="20px" data-weight="regular">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path
-                          d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z">
-                        </path>
-                      </svg>
                     </div>
-                    <form action="search.php" method="get" class="flex w-full">
-                      <input name="q" placeholder="Start by searching for your lost item"
-                      class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-full placeholder:text-[#4e7397] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
-                      value="" />
-                    <div
-                      class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#d0dbe7] bg-slate-50 pr-[7px]">
-                      <button type="submit"
-                        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
-                        <span class="truncate">Search</span>
-                      </button>
-                    </div>
-                    </form>
                   </div>
                 </label>
               </div>
@@ -143,24 +122,24 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
                 <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
                   <span class="text-xl font-bold">1</span>
                 </div>
-                <h3 class="text-[#0e141b] text-lg font-bold">Report As Found</h3>
-                <p class="text-[#4e7397] text-sm">Look through found items, that have been posted, by other users.</p>
+                <h3 class="text-[#0e141b] text-lg font-bold">Report</h3>
+                <p class="text-[#4e7397] text-sm">Post found items.</p>
               </div>
 
               <div class="flex flex-col items-center text-center gap-3 p-4 bg-white rounded-xl shadow-sm">
                 <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
                   <span class="text-xl font-bold">2</span>
                 </div>
-                <h3 class="text-[#0e141b] text-lg font-bold">Get Matched</h3>
-                <p class="text-[#4e7397] text-sm">When you see your item, press claim</p>
+                <h3 class="text-[#0e141b] text-lg font-bold">Recognize</h3>
+                <p class="text-[#4e7397] text-sm">Claim ownership of missing items.</p>
               </div>
 
               <div class="flex flex-col items-center text-center gap-3 p-4 bg-white rounded-xl shadow-sm">
                 <div class="flex items-center justify-center rounded-full bg-[#308ce8] text-white w-12 h-12 mb-2">
                   <span class="text-xl font-bold">3</span>
                 </div>
-                <h3 class="text-[#0e141b] text-lg font-bold">Reconnect</h3>
-                <p class="text-[#4e7397] text-sm">Your details will be sent to the finder for fast retrieval.</p>
+                <h3 class="text-[#0e141b] text-lg font-bold">Return</h3>
+                <p class="text-[#4e7397] text-sm">Reclaim your lost possesions.</p>
               </div>
             </div>
           </div>
@@ -218,71 +197,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
           </div>
 
           <!-- Testimonials Section -->
-          <div class="flex flex-col gap-6 px-4 py-6">
-            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">What our users say</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="p-6 bg-white rounded-xl shadow-sm">
-                <p class="text-[#4e7397] text-base italic mb-4">"I lost my wallet at the FabLab and thought it was gone
-                  forever. Within 24 hours, someone had found it and contacted me through Ayera. All my cards and cash
-                  were still there!"</p>
-                <p class="text-[#0e141b] text-sm font-bold">- Michael T., C2027</p>
-              </div>
-              <div class="p-6 bg-white rounded-xl shadow-sm">
-                <p class="text-[#4e7397] text-base italic mb-4">"Finding Ayera was a lifesaver. I found someone's laptop
-                  at Hakuna and had no idea how to return it. Posted it here and the owner claimed it. I returned it
-                  within hours."</p>
-                <p class="text-[#0e141b] text-sm font-bold">- Samantha K., C2025</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- FAQ Section -->
-          <div class="flex flex-col gap-6 px-4 py-6 mb-10">
-            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">Frequently asked questions
-            </h2>
-            <div class="space-y-4">
-              <div class="p-4 bg-white rounded-xl shadow-sm">
-                <h3 class="text-[#0e141b] text-lg font-bold mb-2">Is Ayera free to use?</h3>
-                <p class="text-[#4e7397] text-sm">Yes, Ayera is completely free to use for both reporting found items
-                  and claiming items.</p>
-              </div>
-              <div class="p-4 bg-white rounded-xl shadow-sm">
-                <h3 class="text-[#0e141b] text-lg font-bold mb-2">How does Ayera protect my privacy?</h3>
-                <p class="text-[#4e7397] text-sm">We never share your personal contact information publicly. Your
-                  details are sent to the person who you claimed had your item(s). The details sent are your Ashesi
-                  Email Address, Phone number, and your Name.</p>
-              </div>
-              <div class="p-4 bg-white rounded-xl shadow-sm">
-                <h3 class="text-[#0e141b] text-lg font-bold mb-2">What areas does Ayera cover?</h3>
-                <p class="text-[#4e7397] text-sm">Ayera is available and can be used anywhere on Ashesi Campus and
-                  surrounding OffCampus Hostels and facilities. </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- CTA Section -->
-          <div class="flex flex-col items-center gap-6 px-4 py-10 bg-[#f6f9fc] rounded-xl text-center mb-10">
-            <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">Ready to find what you've
-              lost?</h2>
-            <p class="text-[#4e7397] text-base max-w-md">Join thousands of users who have successfully reconnected with
-              their lost items through Ayera.</p>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <?php if(!$isLoggedIn): ?>
-              <a href="./views/register.php">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#308ce8] text-slate-50 text-base font-bold leading-normal tracking-[0.015em] w-full">
-                  <span class="truncate">Sign up</span>
-                </button>
-              </a>
-              <?php endif; ?>
-              <a href="./views/report.php">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-[#e7edf3] text-[#0e141b] text-base font-bold leading-normal tracking-[0.015em] w-full">
-                  <span class="truncate">Report a missing item</span>
-                </button>
-              </a>
-            </div>
-          </div>
+      
         </div>
       </div>
 
@@ -291,7 +206,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
         <div class="max-w-[960px] mx-auto px-4">
           <div class="flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-400 text-sm mb-4 md:mb-0">
-              &copy; <?php echo date("Y"); ?> Ayera - All rights reserved
+              Ayera - All rights reserved
             </p>
             <div class="flex space-x-6">
               <a href="#about" class="text-gray-400 hover:text-white text-sm">About</a>
