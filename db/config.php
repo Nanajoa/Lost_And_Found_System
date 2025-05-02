@@ -1,23 +1,15 @@
 <?php
-// New usage with DatabaseSingleton
+// Include the DatabaseSingleton class
+require_once 'patterns/DatabaseSingleton.php'; // Ensure the path is correct
 
-require_once '../patterns/DatabaseSingleton.php'; // Include the singleton class
-
-// Get the singleton instance
+// Get the database connection instance
 $db = DatabaseSingleton::getInstance();
+$conn = $db->getConnection(); // This is your DB connection
 
-// Get the database connection
-$conn = $db->getConnection();
-
-// Use $conn in your queries as before
-$query = "SELECT * FROM LostItems";
-$result = $conn->query($query);
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        echo $row['name'] . "<br>";
-    }
-} else {
-    echo "No items found.";
+// Test the connection (Optional, for debugging)
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// You can now use `$conn` for all database operations
 ?>

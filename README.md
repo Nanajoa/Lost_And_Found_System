@@ -51,8 +51,8 @@ _Sprint 1 file structure (kindly don't change structure, you can make suggestion
 │   │   │── login.php  # Login page UI  
 │   │   │── register.php  # Registration page UI  
 │   │   │── report.php  # Form for reporting lost items  
-│   │   │── search_results.html  # Displays search results  
-│   │   │── item_details.html  # Shows lost item details  
+│   │   │── search_results.php  # Displays search results  
+│   │   │── item_details.php  # Shows lost item details  
 │  
 │── .htaccess  # (For Apache, to route requests properly)  
 │── config.php  # Configuration file for environment settings  
@@ -63,8 +63,8 @@ _WorkFlow_
 User visits index.php → JavaScript fetches lost items from backend/search.php and displays them.
 User logs in (login.php) → Form submits to backend/auth.php?action=login, and response determines if they proceed.
 User reports a lost item (report.php) → Data is sent via POST to backend/report.php, which stores it in the database.
-User searches for an item (search_results.html) → JavaScript fetches search results from backend/search.php?q=item.
-User views item details (item_details.html) → Page fetches data from backend/item_details.php?id=123
+User searches for an item (search_results.php) → JavaScript fetches search results from backend/search.php?q=item.
+User views item details (item_details.php) → Page fetches data from backend/item_details.php?id=123
 
 
 _Purpose:_
@@ -80,11 +80,11 @@ Frontend (HTML, CSS, JavaScript - /frontend/)
 index.php – Displays recent lost items and a search bar.
 login.php & register.php – Form pages that send data to auth.php.
 report.php – Sends lost item reports to report.php.
-search_results.html – Fetches search results from search.php.
-item_details.html – Displays lost item details from item_details.php.
+search_results.php – Fetches search results from search.php.
+item_details.php – Displays lost item details from item_details.php.
 JavaScript (Handles Frontend Logic)
 auth.js – Sends login & registration requests via fetch().
-search.js – Sends search queries and updates search_results.html.
+search.js – Sends search queries and updates search_results.php.
 report.js – Submits lost item reports via fetch().
 
 

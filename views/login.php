@@ -93,7 +93,7 @@
                   value="" />
               </label>
             </div>
-            <a href="forgot-password.html" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
+            <a href="forgot-password.php" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
 
             <button onclick="window.location.href='homepage.php';"
               class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">

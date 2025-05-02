@@ -32,9 +32,9 @@
         </div>
         <div class="hidden md:flex space-x-6">
           <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
-          <a href="category.html" class="text-[#4e7397] hover:text-[#308ce8]">Browse Items</a>
-          <a href="report.html" class="text-[#4e7397] hover:text-[#308ce8]">Report Item</a>
-          <a href="about.html" class="text-[#4e7397] hover:text-[#308ce8]">About</a>
+          <a href="category.php" class="text-[#4e7397] hover:text-[#308ce8]">Browse Items</a>
+          <a href="report.php" class="text-[#4e7397] hover:text-[#308ce8]">Report Item</a>
+          <a href="about.php" class="text-[#4e7397] hover:text-[#308ce8]">About</a>
         </div>
         <div class="flex items-center space-x-4">
           <button class="md:hidden focus:outline-none">
@@ -42,12 +42,12 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <a href="report.html">
+          <a href="report.php">
             <button class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
               <span class="truncate">Report Found Item</span>
             </button>
           </a>
-          <a href="profile.html">
+          <a href="profile.php">
             <div class="w-10 h-10 rounded-full bg-[#e7edf3] flex items-center justify-center overflow-hidden">
               <img src="/api/placeholder/40/40" alt="Profile" class="h-full w-full object-cover" />
             </div>
@@ -60,14 +60,14 @@
         <nav class="flex mb-6 text-sm" aria-label="Breadcrumb">
           <ol class="inline-flex items-center space-x-1 md:space-x-3">
             <li class="inline-flex items-center">
-              <a href="index.html" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
+              <a href="index.php" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
             </li>
             <li>
               <div class="flex items-center">
                 <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <a href="category.html" class="ml-1 text-[#4e7397] hover:text-[#308ce8] md:ml-2">Browse Items</a>
+                <a href="category.php" class="ml-1 text-[#4e7397] hover:text-[#308ce8] md:ml-2">Browse Items</a>
               </div>
             </li>
             <li aria-current="page">
@@ -184,7 +184,7 @@
         <div class="mt-8">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold mb-4">Similar Items</h2>
-            <a href="category.html" class="text-[#308ce8] font-medium hover:underline">View all</a>
+            <a href="category.php" class="text-[#308ce8] font-medium hover:underline">View all</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Similar Item 1 -->
@@ -198,7 +198,7 @@
                 <p class="text-[#4e7397] text-sm mb-2">Found in Student Center</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 10, 2025</span>
-                  <a href="item-details.html?id=9" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
+                  <a href="item-details.php?id=9" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
                 </div>
               </div>
             </div>
@@ -214,7 +214,7 @@
                 <p class="text-[#4e7397] text-sm mb-2">Found in Library</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 8, 2025</span>
-                  <a href="item-details.html?id=10" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
+                  <a href="item-details.php?id=10" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
                 </div>
               </div>
             </div>
@@ -230,7 +230,7 @@
                 <p class="text-[#4e7397] text-sm mb-2">Found in Computer Lab</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 11, 2025</span>
-                  <a href="item-details.html?id=11" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
+                  <a href="item-details.php?id=11" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
                 </div>
               </div>
             </div>
@@ -246,7 +246,7 @@
                 <p class="text-[#4e7397] text-sm mb-2">Found in Engineering Building</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 9, 2025</span>
-                  <a href="item-details.html?id=12" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
+                  <a href="item-details.php?id=12" class="text-[#308ce8] text-sm font-medium hover:underline">View</a>
                 </div>
               </div>
             </div>

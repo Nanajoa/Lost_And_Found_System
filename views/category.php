@@ -50,9 +50,9 @@
               </svg>
             </button>
             <div class="absolute right-0 mt-2 w-48 py-2 bg-white rounded-xl shadow-lg hidden group-hover:block z-10">
-              <a href="profile.html" class="block px-4 py-2 text-sm text-[#0e141b] hover:bg-[#e7edf3]">My Profile</a>
-              <a href="settings.html" class="block px-4 py-2 text-sm text-[#0e141b] hover:bg-[#e7edf3]">Settings</a>
-              <a href="index.html" class="block px-4 py-2 text-sm text-[#e94c4c] hover:bg-[#e7edf3]">Log Out</a>
+              <a href="profile.php" class="block px-4 py-2 text-sm text-[#0e141b] hover:bg-[#e7edf3]">My Profile</a>
+              <a href="settings.php" class="block px-4 py-2 text-sm text-[#0e141b] hover:bg-[#e7edf3]">Settings</a>
+              <a href="index.php" class="block px-4 py-2 text-sm text-[#e94c4c] hover:bg-[#e7edf3]">Log Out</a>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
         <div class="layout-content-container flex flex-col w-full max-w-3xl px-6">
           <div class="flex justify-between items-center mb-6">
             <h1 class="text-[#0e141b] text-2xl font-bold">My Profile</h1>
-            <a href="edit-profile.html" class="flex items-center gap-2 text-[#308ce8] hover:text-[#1a70c5]">
+            <a href="edit-profile.php" class="flex items-center gap-2 text-[#308ce8] hover:text-[#1a70c5]">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>

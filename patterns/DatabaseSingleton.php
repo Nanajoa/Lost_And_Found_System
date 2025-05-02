@@ -1,19 +1,25 @@
 <?php
 class DatabaseSingleton {
     private static $instance = null;
-    private $conn;
-
+    private $connection;
+    
     private function __construct() {
-        // Establish database connection (adjust with your credentials)
-        $this->conn = new mysqli("localhost", "root", "", "lost_and_found_system");
-        
-        // Check connection
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
+        $servername = 'localhost';
+        $username = 'root';
+        $password = '';
+        $dbname = 'lost_and_found';
+
+        // Creating a new database connection
+        try {
+            $this->connection = new mysqli($servername, $username, $password, $dbname);
+            if ($this->connection->connect_error) {
+                throw new Exception("Connection failed: " . $this->connection->connect_error);
+            }
+        } catch (Exception $e) {
+            die("Database connection error: " . $e->getMessage());
         }
     }
 
-    // Get the singleton instance
     public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new DatabaseSingleton();
@@ -21,9 +27,8 @@ class DatabaseSingleton {
         return self::$instance;
     }
 
-    // Get the database connection
     public function getConnection() {
-        return $this->conn;
+        return $this->connection;
     }
 }
 ?>

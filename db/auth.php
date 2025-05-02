@@ -1,6 +1,6 @@
 <?php
 /**
- * Authentication functions for the Lost and Found System
+ * Authentication functions for the applciation
  */
 
 /**

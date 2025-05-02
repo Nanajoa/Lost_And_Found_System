@@ -33,13 +33,13 @@
           </a>
         </div>
         <div class="flex flex-1 justify-end gap-4">
-          <a href="report.html">
+          <a href="./report.php">
             <button
               class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-              <span class="truncate">Report Found Item</span>
+              <span class="truncate">Report An Item</span>
             </button>
           </a>
-          <a href="profile.html">
+          <a href="profile.php">
             <div class="w-10 h-10 rounded-full bg-[#e7edf3] flex items-center justify-center overflow-hidden">
               <img src="/api/placeholder/40/40" alt="Profile" class="h-full w-full object-cover" />
             </div>
@@ -51,9 +51,9 @@
         <!-- Hero Section -->
         <div class="mb-8 rounded-xl bg-[#308ce8] p-6 text-white">
           <h1 class="mb-2 text-2xl font-bold">Welcome to Ayera</h1>
-          <p class="mb-4">The Ashesi Lost and Found Platform</p>
+          <p class="mb-4">Ashesi's Lost and Found App</p>
           <div class="flex gap-4">
-            <a href="report.html">
+            <a href="report.php">
               <button class="rounded-xl bg-white px-4 py-2 text-[#308ce8] font-medium hover:bg-[#f0f2f4] transition">
                 Report Found Item
               </button>
@@ -66,86 +66,12 @@
           </div>
         </div>
 
-        <!-- Search Bar -->
-        <div class="mb-8">
-          <div class="relative">
-            <input type="text" placeholder="Search for items..."
-              class="w-full px-4 py-3 rounded-xl border border-[#e7edf3] focus:outline-none focus:ring-2 focus:ring-[#308ce8]">
-            <button class="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#4e7397]" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Categories -->
-        <div class="mb-8" id="categories">
-          <h2 class="text-xl font-bold mb-4">Categories</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            <a href="category.html?category=Electronics" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Electronics</span>
-            </a>
-            <a href="category.html?category=Stationery" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Stationery</span>
-            </a>
-            <a href="category.html?category=Clothing" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Clothing</span>
-            </a>
-            <a href="category.html?category=ID+Cards" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">ID Cards</span>
-            </a>
-            <a href="category.html?category=Books" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
-              <span class="font-medium">Books</span>
-            </a>
-            <a href="category.html?category=Keys" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Keys</span>
-            </a>
-            <a href="category.html?category=Bags" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Bags</span>
-            </a>
-            <a href="category.html?category=Jewelry" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Jewelry</span>
-            </a>
-            <a href="category.html?category=Others" class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm hover:shadow-md transition text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#308ce8] mb-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-              </svg>
-              <span class="font-medium">Others</span>
-            </a>
-          </div>
-        </div>
 
         <!-- Recently Found Items -->
         <div class="mb-8">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold">Recently Found Items</h2>
-            <a href="category.html" class="text-[#308ce8] font-medium hover:underline">View all</a>
+            <a href="category.php" class="text-[#308ce8] font-medium hover:underline">View all</a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -161,7 +87,7 @@
                 <p class="text-sm mb-3 line-clamp-2">A blue metal water bottle with Ashesi logo and some stickers.</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 12, 2025</span>
-                  <a href="item-details.html?id=1" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
+                  <a href="item-details.php?id=1" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
                 </div>
               </div>
             </div>
@@ -178,7 +104,7 @@
                 <p class="text-sm mb-3 line-clamp-2">An Ashesi University student ID card found near the cafeteria entrance.</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 11, 2025</span>
-                  <a href="item-details.html?id=2" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
+                  <a href="item-details.php?id=2" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
                 </div>
               </div>
             </div>
@@ -195,7 +121,7 @@
                 <p class="text-sm mb-3 line-clamp-2">A Casio scientific calculator found after class on April 10th.</p>
                 <div class="flex justify-between items-center">
                   <span class="text-xs text-[#4e7397]">Found April 10, 2025</span>
-                  <a href="item-details.html?id=3" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
+                  <a href="item-details.php?id=3" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
                 </div>
               </div>
             </div>
@@ -272,29 +198,9 @@
             <a href="#" class="hover:underline hover:text-black">Home</a>
           </div>
 
-          <!-- Social Media Icons -->
-          <div class="flex gap-4 text-gray-600">
-            <a href="#" class="hover:text-black transition">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.27 4.27 0 001.88-2.36c-.82.5-1.73.84-2.7 1.03a4.23 4.23 0 00-7.19 3.86c-3.52-.17-6.64-1.86-8.73-4.42a4.22 4.22 0 001.31 5.64A4.15 4.15 0 012.8 9v.05a4.23 4.23 0 003.39 4.14c-.73.2-1.5.23-2.25.09a4.24 4.24 0 003.95 2.93 8.48 8.48 0 01-5.25 1.81c-.34 0-.67-.02-1-.06a11.93 11.93 0 006.45 1.89c7.74 0 11.98-6.41 11.98-11.97 0-.18 0-.35-.01-.53A8.52 8.52 0 0024 4.56a8.3 8.3 0 01-2.54.7z" />
-              </svg>
-            </a>
-            <a href="#" class="hover:text-black transition">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.13 8.44 9.88v-7H7.9v-2.88h2.54V9.41c0-2.5 1.49-3.88 3.78-3.88 1.1 0 2.25.2 2.25.2v2.47H15.4c-1.25 0-1.63.78-1.63 1.58v1.9h2.77l-.44 2.88H13.8v7C18.34 21.13 22 17 22 12z" />
-              </svg>
-            </a>
-            <a href="#" class="hover:text-black transition">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M21 6.5a2.5 2.5 0 01-2.5-2.5A2.5 2.5 0 0121 1.5a2.5 2.5 0 012.5 2.5A2.5 2.5 0 0121 6.5zm-9 1.5c-3.31 0-6 2.69-6 6v6c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5v-6c0-3.31-2.69-6-6-6zm0 2c2.21 0 4 1.79 4 4v6h-8v-6c0-2.21 1.79-4 4-4z" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Bottom Text -->
+        <!-- Footer -->
         <div class="mt-6 text-center text-xs text-gray-500">
-      Ayera
+          Finding lost possessions made easy.
         </div>
       </footer>
 

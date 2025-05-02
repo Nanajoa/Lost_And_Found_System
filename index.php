@@ -129,37 +129,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             </div>
           </div>
 
-          <!-- How It Works Section -->
-          <div class="flex flex-col gap-10 px-4 py-10 @container">
-            <div class="flex flex-col gap-6">
-              <div class="flex flex-col gap-4">
-                <h1
-                  class="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]">
-                  How it works
-                </h1>
-                <p class="text-[#0e141b] text-base font-normal leading-normal max-w-[720px]">
-                  We make it easy for you to post found items and find lost items. Our platform helps you connect with
-                  the person who found your item, so you can arrange its return.
-                </p>
-              </div>
-              <div class="flex gap-4">
-                <a href="views/about.php">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#308ce8] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
-                    <span class="truncate">Learn More</span>
-                  </button>
-                </a>
-                <a href="views/report.php">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] w-fit">
-                    <span class="truncate">Report a found item</span>
-                  </button>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Process Steps Section -->
+          <!-- Aboout Section -->
           <div id="about" class="flex flex-col gap-6 px-4 py-6 bg-[#f6f9fc] rounded-xl mb-10">
             <h2 class="text-[#0e141b] text-2xl font-bold leading-tight tracking-[-0.015em]">About Ayera</h2>
             <p class="text-[#0e141b] text-base font-normal leading-normal">
