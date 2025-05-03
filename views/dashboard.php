@@ -207,7 +207,7 @@ try {
                         </button>
                       </a>
                       <?php if ($userType === 'admin'): ?>
-                        <a href="admin/dashboard.php" class="block">
+                        <a href="../admin/dashboard.php" class="block">
                           <button class="w-full flex items-center justify-center rounded-xl h-10 px-4 bg-[#308ce8] text-slate-50 text-sm font-bold">
                             Manage Reports
                           </button>

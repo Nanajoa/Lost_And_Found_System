@@ -2,43 +2,44 @@
 // Start session and check if user is already logged in
 session_start();
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    header("location: ../index.php");
+    header("location: ../index.php"); // Redirect to home page if user is already logged in
     exit;
 }
 
 // Include necessary files for database and authentication
-require_once __DIR__ . '/../db/database.php';
-require_once __DIR__ . '/../db/auth.php';
+require_once __DIR__ . '/../db/database.php'; // Include database connection
+require_once __DIR__ . '/../db/auth.php'; // Include authentication functions
 
 // Initialize form variables
-$first_name = $last_name = $email = $school_id = $password = $confirm_password = "";
-$first_name_err = $last_name_err = $email_err = $school_id_err = $password_err = $confirm_password_err = $register_err = "";
+$first_name = $last_name = $email = $school_id = $password = $confirm_password = ""; // Initialize form variables
+$first_name_err = $last_name_err = $email_err = $school_id_err = $password_err = $confirm_password_err = $register_err = ""; // Initialize error variables
 
 // Handle POST request when the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") { // Check if form is submitted
 
     // Validate first name
-    if (empty(trim($_POST["first_name"]))) {
-        $first_name_err = "Please enter your first name.";
+    if (empty(trim($_POST["first_name"]))) { // Check if first name is empty
+        $first_name_err = "Please enter your first name."; // Set error message if first name is empty
     } else {
-        $first_name = trim($_POST["first_name"]);
+        $first_name = trim($_POST["first_name"]); // Trim and assign first name
     }
 
     // Validate last name
-    if (empty(trim($_POST["last_name"]))) {
-        $last_name_err = "Please enter your last name.";
+    if (empty(trim($_POST["last_name"]))) { // Check if last name is empty
+        $last_name_err = "Please enter your last name."; // Set error message if last name is empty
     } else {
-        $last_name = trim($_POST["last_name"]);
+        $last_name = trim($_POST["last_name"]); // Trim and assign last name
     }
 
     // Validate email
-    if (empty(trim($_POST["email"]))) {
-        $email_err = "Please enter an email.";
+    if (empty(trim($_POST["email"]))) { // Check if email is empty
+        $email_err = "Please enter an email."; // Set error message if email is empty
     } else {
-        $email = trim($_POST["email"]);
+        $email = trim($_POST["email"]); // Trim and assign email
         // Check if email already exists in the database
         if (emailExists($email)) {
-            $email_err = "This email is already taken.";
+            $email_err = "This email is already taken."; // Set error message if email already exists
+            echo $email_err;
         }
     }
 

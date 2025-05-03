@@ -46,7 +46,7 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <?php if($isLoggedIn): ?>
               <div class="flex items-center gap-2">
                 <span class="text-[#0e141b] text-sm">Welcome, <?php echo htmlspecialchars($userFirstName); ?></span>
-                <a href="views/admin/dashboard.php">
+                <a href="admin/dashboard.php">
                   <button
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
                   >
