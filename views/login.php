@@ -77,28 +77,30 @@
             <div class="w-full">
             <h1 class="text-[#111517] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">
               Log in</h1>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-[#111517] text-base font-medium leading-normal pb-2">Ashesi Email</p>
-                <input placeholder="you@ashesi.edu.gh"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
-                  value="" />
-              </label>
-            </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-[#111517] text-base font-medium leading-normal pb-2">Password</p>
-                <input placeholder="Your password" type="password"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
-                  value="" />
-              </label>
-            </div>
-            <a href="forgot-password.php" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
+            <form action="login.php" method="POST">
+              <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
+                <label class="flex flex-col min-w-40 flex-1">
+                  <p class="text-[#111517] text-base font-medium leading-normal pb-2">Ashesi Email</p>
+                  <input name="email" placeholder="you@ashesi.edu.gh"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
+                    value="" />
+                </label>
+              </div>
+              <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
+                <label class="flex flex-col min-w-40 flex-1">
+                  <p class="text-[#111517] text-base font-medium leading-normal pb-2">Password</p>
+                  <input name="password" placeholder="Your password" type="password"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
+                    value="" />
+                </label>
+              </div>
+              <a href="forgot-password.php" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
 
-            <button onclick="window.location.href='homepage.php';"
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">
-              <span class="truncate">Log in</span>
-            </button>
+              <button type="submit"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">
+                <span class="truncate">Log in</span>
+              </button>
+            </form>
 
             </div>
           </div>
@@ -106,6 +108,21 @@
       </div>
     </div>
   </div>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  require_once __DIR__ . '/../db/auth.php';
+  $email = trim($_POST['email']);
+  $password = trim($_POST['password']);
+  $loginResult = login($email, $password);
+  if ($loginResult['success']) {
+    header("Location: homepage.php");
+    exit;
+  } else {
+    echo '<p class="text-red-500">' . htmlspecialchars($loginResult['message']) . '</p>';
+  }
+}
+?>
 </body>
 
 </html>
