@@ -1,3 +1,70 @@
+<?php
+// Init session at the beginning of file
+session_start();
+
+// Check if already logged in
+if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+  header("location: homepage.php");
+  exit;
+}
+
+// Debug variables
+$debug_info = [];
+
+// Process login data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Include auth file
+  require_once __DIR__ . '/../db/auth.php';
+  
+  $debug_info[] = "POST request received";
+  
+  $email = trim($_POST['email'] ?? '');
+  $password = trim($_POST['password'] ?? '');
+  
+  $debug_info[] = "Email: " . $email;
+  $debug_info[] = "Password length: " . strlen($password);
+  
+  // Validate inputs
+  $login_err = "";
+  
+  if (empty($email)) {
+    $login_err = "Please enter your email.";
+  } else if (empty($password)) {
+    $login_err = "Please enter your password.";
+  }
+  
+  // If no validation errors, attempt to login
+  if (empty($login_err)) {
+    $debug_info[] = "Calling loginUser()";
+    
+    $loginResult = loginUser($email, $password);
+    $debug_info[] = "Login result: " . ($loginResult['success'] ? 'Success' : 'Failed');
+    
+    if ($loginResult['success']) {
+      $debug_info[] = "Login successful, redirecting...";
+      
+      // Force session variables to be set
+      $_SESSION["loggedin"] = true;
+      $_SESSION["user_id"] = $loginResult['user']['id'];
+      $_SESSION["user_type"] = $loginResult['user']['type'];
+      $_SESSION["email"] = $loginResult['user']['email'];
+      $_SESSION["first_name"] = $loginResult['user']['first_name'];
+      $_SESSION["last_name"] = $loginResult['user']['last_name'];
+      
+      // Debug session
+      $debug_info[] = "Session variables: " . print_r($_SESSION, true);
+      
+      // Redirect to homepage with absolute URL path
+      header("Location: homepage.php");
+      exit();
+    } else {
+      $login_err = $loginResult['message'];
+      $debug_info[] = "Login failed: " . $login_err;
+    }
+  }
+}
+?>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -14,6 +81,14 @@
 </head>
 
 <body>
+  <!-- Debug info - only shown in development -->
+  <?php if (!empty($debug_info) && isset($_GET['debug'])): ?>
+  <div style="margin:10px; padding:10px; border:1px solid #ccc; background:#eee;">
+    <h3>Debug Info:</h3>
+    <pre><?php echo implode("\n", $debug_info); ?></pre>
+  </div>
+  <?php endif; ?>
+  
   <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden"
     style='font-family: Inter, "Noto Sans", sans-serif;'>
     <div class="layout-container flex h-full grow flex-col">
@@ -51,41 +126,48 @@
       <div class="flex flex-1 justify-center py-5">
         <div class="layout-content-container flex flex-col items-center w-[576px] max-w-[576px] py-5 flex-1">
           <div class="@container w-full">
-        <div class="@[480px]:p-4">
-          <div
-            class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-start justify-end px-4 pb-10 @[480px]:px-10 w-full"
-            style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("login_../static/bg.jpeg");'>
-            <div class="flex flex-col gap-2 text-left">
-          <h1
-            class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
-            Welcome back to Ayera!
-          </h1>
-          <h2
-            class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
-            Report and find lost items at your university
-          </h2>
+            <div class="@[480px]:p-4">
+              <div
+                class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-start justify-end px-4 pb-10 @[480px]:px-10 w-full"
+                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("../static/bg.jpeg");'>
+                <div class="flex flex-col gap-2 text-left">
+                  <h1
+                    class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
+                    Welcome back to Ayera!
+                  </h1>
+                  <h2
+                    class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
+                    Report and find lost items at your university
+                  </h2>
+                </div>
+                <!-- Added register.php link to Sign up button -->
+                <a href="register.php">
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#2c90e2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
+                    <span class="truncate">Sign up</span>
+                  </button>
+                </a>
+              </div>
             </div>
-            <!-- Added register.php link to Sign up button -->
-            <a href="register.php">
-          <button
-            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#2c90e2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
-            <span class="truncate">Sign up</span>
-          </button>
-            </a>
-          </div>
-        </div>
           </div>
           <!-- Login form section with centered alignment -->
-            <div class="w-full">
+          <div class="w-full">
             <h1 class="text-[#111517] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">
               Log in</h1>
-            <form action="login.php" method="POST">
+            
+            <?php if (!empty($login_err)): ?>
+              <div id="login-errors" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-[480px] mx-auto mb-4">
+                <?php echo $login_err; ?>
+              </div>
+            <?php endif; ?>
+              
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
               <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
                 <label class="flex flex-col min-w-40 flex-1">
                   <p class="text-[#111517] text-base font-medium leading-normal pb-2">Ashesi Email</p>
                   <input name="email" placeholder="you@ashesi.edu.gh"
                     class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111517] focus:outline-0 focus:ring-0 border border-[#dce1e5] bg-white focus:border-[#dce1e5] h-14 placeholder:text-[#647787] p-[15px] text-base font-normal leading-normal"
-                    value="" />
+                    value="<?php echo htmlspecialchars($email ?? ''); ?>" />
                 </label>
               </div>
               <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3 mx-auto">
@@ -96,35 +178,55 @@
                     value="" />
                 </label>
               </div>
-              <a href="forgot-password.php" class="text-[#647787] text-sm font-normal leading-normal pb-3 pt-1 px-4 underline max-w-[480px] mx-auto">Forgot your password?</a>
-
-              <button type="submit"
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">
-                <span class="truncate">Log in</span>
-              </button>
+              
+              <div class="flex max-w-[480px] mx-auto">
+                <button type="submit" class="flex min-w-[84px] max-w-[480px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-[#2c90e2] text-white text-base font-bold leading-normal tracking-[0.015em]">
+                  <span class="truncate">Log in</span>
+                </button>
+              </div>
             </form>
 
-            </div>
+            <!-- Error message container -->
+            <div id="login-errors-js" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-[480px] mx-auto mt-4"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  require_once __DIR__ . '/../db/auth.php';
-  $email = trim($_POST['email']);
-  $password = trim($_POST['password']);
-  $loginResult = login($email, $password);
-  if ($loginResult['success']) {
-    header("Location: homepage.php");
-    exit;
-  } else {
-    echo '<p class="text-red-500">' . htmlspecialchars($loginResult['message']) . '</p>';
-  }
-}
-?>
-</body>
+<script>
+  // Form validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const password = document.querySelector('input[name="password"]').value.trim();
+    let isValid = true;
+    let errorMessage = '';
+    
+    // Clear previous errors
+    const errorDiv = document.getElementById('login-errors-js');
+    errorDiv.classList.add('hidden');
+    errorDiv.textContent = '';
+    
+    if (!email) {
+      isValid = false;
+      errorMessage = 'Please enter your email address.';
+    } else if (!email.includes('@ashesi.edu.gh')) {
+      isValid = false;
+      errorMessage = 'Please enter a valid Ashesi email address.';
+    }
+    
+    if (!password) {
+      isValid = false;
+      errorMessage = errorMessage || 'Please enter your password.';
+    }
+    
+    if (!isValid) {
+      e.preventDefault();
+      errorDiv.textContent = errorMessage;
+      errorDiv.classList.remove('hidden');
+    }
+  });
+</script>
 
+</body>
 </html>
