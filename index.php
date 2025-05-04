@@ -1,6 +1,8 @@
 <?php
-// Start session
-session_start();
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
@@ -44,43 +46,21 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
               </div>
               <h2 class="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">Ayera</h2>
             </a>
-
-            <?php if($isLoggedIn): ?>
-              <div class="flex items-center gap-2">
-                <span class="text-[#0e141b] text-sm">Welcome, <?php echo htmlspecialchars($userFirstName); ?></span>
-                <a href="admin/dashboard.php">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
-                    <span class="truncate">Dashboard</span>
-                  </button>
-                </a>
-                <a href="db/auth.php?action=logout">
-                  <button
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
-                    <span class="truncate">Log out</span>
-                  </button>
-                </a>
-              </div>
-            <?php else: ?>
-              <a href="views/login.php">
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span class="truncate">Log in</span>
-              </button>
-              </a>
-              <a href="views/register.php">
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span class="truncate">Sign up</span>
-              </button>
-              </a>
-            <?php endif; ?>
           </div>
-          </header>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="views/login.php">
+            <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]">
+              <span class="truncate">Log in</span>
+            </button>
+          </a>
+          <a href="views/register.php">
+            <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7edf3] text-[#0e141b] text-sm font-bold leading-normal tracking-[0.015em]">
+              <span class="truncate">Sign up</span>
+            </button>
+          </a>
+        </div>
+      </header>
 
       <!-- Main Content Area -->
       <div class="px-4 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
@@ -90,22 +70,13 @@ $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
             <div class="@[480px]:p-4">
               <div
                 class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/../static/bg.jpeg");'>
+                style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("static/bg.jpeg");'>
                 <div class="flex flex-col gap-2 text-center">
                   <h1
                     class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
-                    Find your lost items
+                    Ayera
                   </h1>
-
                 </div>
-                <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
-                  <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-                    <div
-                      class="text-[#4e7397] flex border border-[#d0dbe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-xl border-r-0"
-                      data-icon="MagnifyingGlass" data-size="20px" data-weight="regular">
-                    </div>
-                  </div>
-                </label>
               </div>
             </div>
           </div>

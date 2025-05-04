@@ -64,12 +64,6 @@
         <div class="layout-content-container flex flex-col w-full max-w-3xl px-6">
           <div class="flex justify-between items-center mb-6">
             <h1 class="text-[#0e141b] text-2xl font-bold">My Profile</h1>
-            <a href="edit-profile.php" class="flex items-center gap-2 text-[#308ce8] hover:text-[#1a70c5]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              <span class="text-sm font-medium">Edit Profile</span>
-            </a>
           </div>
 
           <!-- Profile Card -->
@@ -77,11 +71,7 @@
             <div class="relative h-32 bg-gradient-to-r from-[#308ce8] to-[#65acef]">
               <div class="absolute -bottom-16 left-8">
                 <div class="relative">
-                  <?php if ($user['profile_picture']): ?>
-                    <img src="data:image/jpeg;base64,<?php echo base64_encode($user['profile_picture']); ?>" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white" />
-                  <?php else: ?>
-                    <img src="/api/placeholder/128/128" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white" />
-                  <?php endif; ?>
+                  <img src="/api/placeholder/128/128" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white" />
                   <div class="absolute bottom-3 right-3 bg-[#308ce8] rounded-full p-2 text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -93,8 +83,8 @@
             </div>
             
             <div class="pt-20 px-8 pb-8">
-              <h2 class="text-[#0e141b] text-xl font-bold mb-1"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h2>
-              <div class="text-[#4e7397] text-sm mb-6"><?php echo htmlspecialchars($user['bio']); ?></div>
+              <h2 class="text-[#0e141b] text-xl font-bold mb-1">John Doe</h2>
+              <div class="text-[#4e7397] text-sm mb-6">Student at Ashesi University</div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -108,7 +98,14 @@
                       </div>
                       <div>
                         <div class="text-sm text-[#4e7397]">Ashesi Email</div>
-                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['email']); ?></div>
+                        <div class="text-[#0e141b]">johndoe@ashesi.edu.gh</div>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <div class="text-[#308ce8] mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -119,24 +116,21 @@
                       </div>
                       <div>
                         <div class="text-sm text-[#4e7397]">Phone Number</div>
-                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['phone_number'] ?? 'Not provided'); ?></div>
+                        <div class="text-[#0e141b]">+233 55 123 4567</div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h3 class="text-[#0e141b] text-base font-medium mb-4">Account Information</h3>
-                  <div class="space-y-3">
-                    <div class="flex items-start gap-3">
-                      <div class="text-[#308ce8] mt-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-                        </svg>
-                      </div>
-                      <div>
-                        <div class="text-sm text-[#4e7397]">School ID</div>
-                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['school_id']); ?></div>
-                      </div>
+                  <h3 class="text-[#0e141b] text-base font-medium mb-4">Account Stats</h3>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-[#e7edf3] rounded-xl p-4 text-center">
+                      <div class="text-[#308ce8] text-2xl font-bold">3</div>
+                      <div class="text-[#4e7397] text-sm">Items Reported</div>
+                    </div>
+                    <div class="bg-[#e7edf3] rounded-xl p-4 text-center">
+                      <div class="text-[#308ce8] text-2xl font-bold">2</div>
+                      <div class="text-[#4e7397] text-sm">Items Claimed</div>
                     </div>
                   </div>
                 </div>
