@@ -1,3 +1,24 @@
+<?php
+require_once __DIR__ . '/../db/database.php';
+$conn = getDatabaseConnection();
+$itemId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$itemDetails = null;
+
+if ($itemId > 0) {
+    try {
+        $stmt = $conn->prepare("SELECT name, description, date_lost, location_seen_at, image_path, found_status FROM LostItems WHERE id = ?");
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $itemDetails = $result->fetch_assoc();
+    } catch (Exception $e) {
+        echo "<p class='text-red-500'>Error loading item details: " . htmlspecialchars($e->getMessage()) . "</p>";
+    }
+}
+
+if ($itemDetails):
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +96,7 @@
                 <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <span class="ml-1 text-[#308ce8] font-medium md:ml-2" id="itemTitle">Blue Water Bottle</span>
+                <span class="ml-1 text-[#308ce8] font-medium md:ml-2" id="itemTitle"><?php echo htmlspecialchars($itemDetails['name']); ?></span>
               </div>
             </li>
           </ol>
@@ -86,7 +107,7 @@
             <!-- Image Gallery Section (Left) -->
             <div class="md:w-1/2">
               <div class="h-64 sm:h-80 md:h-full bg-[#e7edf3] relative">
-                <img src="/api/placeholder/600/500" alt="Blue Water Bottle" id="mainImage" class="w-full h-full object-cover" />
+                <img src="<?php echo htmlspecialchars($itemDetails['image_path']); ?>" alt="<?php echo htmlspecialchars($itemDetails['name']); ?>" id="mainImage" class="w-full h-full object-cover" />
                 <span class="absolute top-4 right-4 bg-[#308ce8] text-white px-2 py-1 rounded-lg" id="itemCategory">Electronics</span>
               </div>
               <div class="p-4 bg-[#f7f9fc] border-t border-gray-100 flex space-x-2 overflow-x-auto">
@@ -105,7 +126,7 @@
             <!-- Item Details Section (Right) -->
             <div class="md:w-1/2 p-6">
               <div class="flex items-center justify-between mb-4">
-                <h1 class="text-2xl font-bold" id="detailItemTitle">Blue Water Bottle</h1>
+                <h1 class="text-2xl font-bold" id="detailItemTitle"><?php echo htmlspecialchars($itemDetails['name']); ?></h1>
                 <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Available</span>
               </div>
 
@@ -114,11 +135,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p class="text-sm text-[#4e7397] mb-1">Found Date</p>
-                    <p class="font-medium" id="foundDate">April 12, 2025</p>
+                    <p class="font-medium" id="foundDate"><?php echo date('M d, Y', strtotime($itemDetails['date_lost'])); ?></p>
                   </div>
                   <div>
                     <p class="text-sm text-[#4e7397] mb-1">Location Found</p>
-                    <p class="font-medium" id="locationFound">Engineering Building, 2nd Floor</p>
+                    <p class="font-medium" id="locationFound"><?php echo htmlspecialchars($itemDetails['location_seen_at']); ?></p>
                   </div>
                   <div>
                     <p class="text-sm text-[#4e7397] mb-1">Category</p>
@@ -133,9 +154,7 @@
 
               <div class="mb-6">
                 <h2 class="text-lg font-semibold mb-2">Description</h2>
-                <p class="text-[#4e7397]" id="itemDescription">
-                  A blue metal water bottle with Ashesi logo and several stickers. The bottle appears to be insulated and has some scratches on the bottom. It was found on a desk in room E204 of the Engineering Building.
-                </p>
+                <p class="text-[#4e7397]" id="itemDescription"><?php echo htmlspecialchars($itemDetails['description']); ?></p>
               </div>
 
               <div class="mb-6">
@@ -305,4 +324,8 @@
       </div>
       </body>
       </html>
+
+<?php else: ?>
+<p class='text-red-500'>Item not found.</p>
+<?php endif; ?>
 
