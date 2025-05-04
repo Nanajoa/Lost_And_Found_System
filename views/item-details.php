@@ -54,7 +54,7 @@ if ($itemDetails):
         <div class="hidden md:flex space-x-6">
           <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8]">Home</a>
           <a href="category.php" class="text-[#4e7397] hover:text-[#308ce8]">Browse Items</a>
-          <a href="report.php" class="text-[#4e7397] hover:text-[#308ce8]">Report Item</a>
+          <a href="report-form.php" class="text-[#4e7397] hover:text-[#308ce8]">Report Item</a>
           <a href="about.php" class="text-[#4e7397] hover:text-[#308ce8]">About</a>
         </div>
         <div class="flex items-center space-x-4">
@@ -63,7 +63,7 @@ if ($itemDetails):
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <a href="report.php">
+          <a href="report-form.php">
             <button class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
               <span class="truncate">Report Found Item</span>
             </button>
