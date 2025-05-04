@@ -6,6 +6,9 @@ CREATE TABLE Students (
     email VARCHAR(100) UNIQUE NOT NULL,
     school_id VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(20),
+    bio TEXT DEFAULT 'Student at Ashesi University',
+    profile_picture LONGBLOB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
