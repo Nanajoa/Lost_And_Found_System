@@ -12,30 +12,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Include database connection and NotificationService
 require_once __DIR__ . '/../db/database.php';
-require_once __DIR__ . '/../patterns/NotificationService.php';
+require_once __DIR__ . '/../services/NotificationService.php';
 
 // Get user's ID from session
 $user_id = $_SESSION['user_id'];
 
 // Create NotificationService instance
 $conn = getDatabaseConnection();
-$notifications = [];
-
-try {
-    // Get notifications
-    $stmt = $conn->prepare("
-        SELECT n.*, c.id as claim_id, c.user_id as claimer_id, c.status as claim_status
-        FROM Notifications n
-        LEFT JOIN Claims c ON n.message LIKE CONCAT('%', c.lost_item_id, '%')
-        WHERE n.user_id = ? AND n.user_type = ?
-        ORDER BY n.date_sent DESC
-    ");
-    $stmt->bind_param("is", $_SESSION['user_id'], $_SESSION['user_type']);
-    $stmt->execute();
-    $notifications = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-} catch (Exception $e) {
-    echo "<p class='text-red-500'>Error loading notifications: " . htmlspecialchars($e->getMessage()) . "</p>";
-}
+$notificationService = new NotificationService($conn);
+$notifications = $notificationService->getUserNotifications($user_id);
 ?>
 <!DOCTYPE html>
 <html lang="en">

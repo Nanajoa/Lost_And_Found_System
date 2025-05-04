@@ -56,9 +56,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
         // Commit transaction
         $conn->commit();
 
+        // Create a notification for the item claim
+        require_once __DIR__ . '/../services/NotificationService.php';
+        $notificationService = new NotificationService($conn);
+        $message = "Item #$item_id has been claimed.";
+        $notificationService->createNotification($item_id, $_SESSION['user_id'], $message);
+
         // Redirect to prevent form resubmission
         header("Location: item-details.php?id=" . $item_id);
         exit;
+
     } catch (Exception $e) {
         $conn->rollback();
         echo "<p class='text-red-500'>Error processing claim: " . htmlspecialchars($e->getMessage()) . "</p>";

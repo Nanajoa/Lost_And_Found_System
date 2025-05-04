@@ -1,4 +1,4 @@
--- Students table
+-- Students Table
 CREATE TABLE Students (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE Students (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Admin table
+-- Admin Table
 CREATE TABLE Admin (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE Admin (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- LostItems table
+-- LostItems Table
 CREATE TABLE LostItems (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -32,13 +32,12 @@ CREATE TABLE LostItems (
     found_status ENUM('pending', 'claimed', 'resolved') DEFAULT 'pending',
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
-    image LONGBLOB,   -- Store image data directly
+    image LONGBLOB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX (user_id, user_type)
-    -- Foreign keys for polymorphic relation are handled in the application layer
 );
 
--- Claims table
+-- Claims Table
 CREATE TABLE Claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -50,7 +49,7 @@ CREATE TABLE Claims (
     INDEX (user_id, user_type)
 );
 
--- Notifications table
+-- Notifications Table
 CREATE TABLE Notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -60,9 +59,9 @@ CREATE TABLE Notifications (
     INDEX (user_id, user_type)
 );
 
--- Returned items table
+-- ReturnedItems Table
 CREATE TABLE ReturnedItems (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     lost_item_id INT NOT NULL,
     returned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (lost_item_id) REFERENCES LostItems(id) ON DELETE CASCADE
