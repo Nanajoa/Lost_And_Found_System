@@ -97,8 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" id="location_seen_at" name="location_seen_at" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
           </div>
           <div class="flex flex-col">
-            <label for="image_path" class="text-sm font-medium text-[#4e7397]">Image Path</label>
-            <input type="text" id="image_path" name="image_path" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <label for="image_path" class="text-sm font-medium text-[#4e7397]">Upload Image</label>
+            <input type="file" id="image_path" name="image_path" accept="image/*" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+            <small class="text-[#4e7397]">Max file size: 2MB</small>
           </div>
           <button type="submit" class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
             Submit
@@ -155,4 +156,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     </div>
     </body>
-    </html> 
+    </html>
+
+<script>
+  document.getElementById('image_path').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file && file.size > 2 * 1024 * 1024) { // 2MB in bytes
+      alert('The file size exceeds 2MB. Please upload a smaller file.');
+      event.target.value = '';
+    }
+  });
+</script> 

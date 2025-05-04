@@ -33,10 +33,10 @@
           </a>
         </div>
         <div class="flex flex-1 justify-end gap-4">
-          <a href="./report.php">
+          <a href="report-form.php">
             <button
               class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-              <span class="truncate">Report An Item</span>
+              <span class="truncate">Report Found Item</span>
             </button>
           </a>
           <a href="profile.php">
