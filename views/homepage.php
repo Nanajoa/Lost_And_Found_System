@@ -185,7 +185,7 @@
         $missingItems = [];
 
         try {
-            $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at, image_path FROM LostItems WHERE found_status = 'pending' ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at FROM LostItems WHERE found_status = 'pending' ORDER BY date_lost DESC");
             $stmt->execute();
             $result = $stmt->get_result();
             $missingItems = $result->fetch_all(MYSQLI_ASSOC);
@@ -203,7 +203,7 @@
             <?php foreach ($missingItems as $item): ?>
               <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                 <div class="h-48 bg-[#e7edf3] relative">
-                  <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                  <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
                 </div>
                 <div class="p-4">
                   <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
