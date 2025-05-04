@@ -9,6 +9,8 @@
   <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
     href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Include session management script -->
+  <script src="../js/session.js"></script>
 </head>
 <body class="bg-white font-[Inter,'Noto Sans',sans-serif]">
   <div class="min-h-screen flex flex-col">
@@ -36,7 +38,7 @@
     <main class="flex-1 flex items-center justify-center py-10 px-5">
       <div class="w-full max-w-md">
         <h1 class="text-3xl font-bold text-[#0e141b] mb-2">Forgot your password?</h1>
-        <p class="text-sm text-[#475569] mb-6">No worries. Enter your email and we’ll send you a reset link.</p>
+        <p class="text-sm text-[#475569] mb-6">No worries. Enter your email and we'll send you a reset link.</p>
 
         <form class="space-y-4" onsubmit="event.preventDefault(); alert('Reset link sent!');">
           <div>

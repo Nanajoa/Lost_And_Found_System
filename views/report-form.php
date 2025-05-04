@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
     href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Include session management script -->
+  <script src="../js/session.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen" style='font-family: Inter, "Noto Sans", sans-serif;'>
   <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">

@@ -12,6 +12,8 @@
   <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Include session management script -->
+  <script src="../js/session.js"></script>
 </head>
 
 <body>

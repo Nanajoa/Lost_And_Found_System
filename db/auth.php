@@ -4,7 +4,7 @@
  */
 
 /**
- * Start session if not already started
+ * Check if a session is already active and start it if not
  */
 function startSessionIfNotStarted() {
     if (session_status() === PHP_SESSION_NONE) {
@@ -110,7 +110,7 @@ function requireStudent() {
     }
 }
 
-session_start();
+startSessionIfNotStarted();
 require_once 'database.php';
 
 /**
@@ -206,7 +206,7 @@ function registerStudent($first_name, $last_name, $email, $school_id, $password)
         $user_id = $conn->insert_id;
         
         // Start session and set session variables
-        session_start();
+        startSessionIfNotStarted();
         $_SESSION["loggedin"] = true;
         $_SESSION["user_id"] = $user_id;
         $_SESSION["user_type"] = "student";
@@ -273,7 +273,7 @@ function registerStaff($first_name, $last_name, $email, $faculty_id, $password) 
         $user_id = $conn->insert_id;
         
         // Start session and set session variables
-        session_start();
+        startSessionIfNotStarted();
         $_SESSION["loggedin"] = true;
         $_SESSION["user_id"] = $user_id;
         $_SESSION["user_type"] = "staff";
@@ -320,7 +320,7 @@ function loginUser($email, $password) {
         
         if (password_verify($password, $row["password"])) {
             // Password is correct
-            session_start();
+            startSessionIfNotStarted();
             $_SESSION["loggedin"] = true;
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["user_type"] = "student";
@@ -365,7 +365,7 @@ function loginUser($email, $password) {
         
         if (password_verify($password, $row["password"])) {
             // Password is correct
-            session_start();
+            startSessionIfNotStarted();
             $_SESSION["loggedin"] = true;
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["user_type"] = "staff";
@@ -410,7 +410,7 @@ function loginUser($email, $password) {
         
         if (password_verify($password, $row["password"])) {
             // Password is correct
-            session_start();
+            startSessionIfNotStarted();
             $_SESSION["loggedin"] = true;
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["user_type"] = "admin";
@@ -457,7 +457,7 @@ function loginUser($email, $password) {
  */
 function logoutUser() {
     // Initialize the session
-    session_start();
+    startSessionIfNotStarted();
     
     // Unset all session variables
     $_SESSION = [];
