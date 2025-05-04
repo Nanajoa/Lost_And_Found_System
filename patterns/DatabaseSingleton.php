@@ -15,6 +15,13 @@ class DatabaseSingleton {
             if ($this->connection->connect_error) {
                 throw new Exception("Connection failed: " . $this->connection->connect_error);
             }
+            
+            // Enable error reporting
+            $this->connection->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
+            
+            // Set autocommit to false for transaction support
+            $this->connection->autocommit(false);
+            
         } catch (Exception $e) {
             die("Database connection error: " . $e->getMessage());
         }
@@ -29,6 +36,18 @@ class DatabaseSingleton {
 
     public function getConnection() {
         return $this->connection;
+    }
+    
+    public function beginTransaction() {
+        $this->connection->begin_transaction();
+    }
+    
+    public function commit() {
+        $this->connection->commit();
+    }
+    
+    public function rollback() {
+        $this->connection->rollback();
     }
 }
 ?>
