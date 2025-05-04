@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
                       <div class="text-[#4e7397] text-sm">Items Reported</div>
                     </div>
                     <div class="bg-[#e7edf3] rounded-xl p-4 text-center">
-                      <div class="text-[#308ce8] text-2xl font-bold"><?php echo htmlspecialchars($stats['claimed_items']); ?></div>
+                      <div class="text-[#308ce8] text-2xl font-bold"><?php echo htmlspecialchars($stats['claimed_items'] ?? '0'); ?></div>
                       <div class="text-[#4e7397] text-sm">Items Claimed</div>
                     </div>
                   </div>
