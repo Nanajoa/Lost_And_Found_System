@@ -40,7 +40,7 @@ CREATE TABLE LostItems (
     found_status ENUM('pending', 'resolved') DEFAULT 'pending',
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
-    image_path VARCHAR(255),   -- Store file path for the image
+    image LONGBLOB,   -- Store image data directly
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX (user_id, user_type)
     -- Foreign keys for polymorphic relation are handled in the application layer
