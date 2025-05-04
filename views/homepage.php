@@ -5,7 +5,7 @@ $conn = getDatabaseConnection();
 $missingItems = [];
 
 try {
-    $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at FROM LostItems WHERE found_status = 'pending' ORDER BY date_lost DESC");
+    $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at, found_status FROM LostItems WHERE found_status != 'resolved' ORDER BY date_lost DESC");
     $stmt->execute();
     $result = $stmt->get_result();
     $missingItems = $result->fetch_all(MYSQLI_ASSOC);
@@ -84,6 +84,11 @@ try {
                 <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                     <div class="h-48 bg-[#e7edf3] relative">
                         <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                        <?php if ($item['found_status'] === 'claimed'): ?>
+                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <span class="text-white text-xl font-bold">Claimed</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>

@@ -42,7 +42,7 @@
         <div class="flex gap-6 items-center">
           <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
           <a href="notifications.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Notifications</a>
-          <a href="report-item.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Report Item</a>
+          <a href="reports.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Reports</a>
           <div class="relative group">
             <button class="flex items-center gap-2">
               <img src="/api/placeholder/32/32" alt="Profile" class="w-8 h-8 rounded-full object-cover border-2 border-[#308ce8]" />

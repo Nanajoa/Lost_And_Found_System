@@ -28,13 +28,17 @@ function getDatabaseConnection() {
  * Create lost_and_found database and tables if they don't exist
  */
 function initializeDatabase() {
-    // Connect to MySQL server without selecting a database
-    $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD);
+    $conn = getDatabaseConnection();
     
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    // Create ReturnedItems table
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS ReturnedItems (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            lost_item_id INT NOT NULL,
+            returned_at DATETIME NOT NULL,
+            FOREIGN KEY (lost_item_id) REFERENCES LostItems(id)
+        )
+    ");
     
     try {
         // Start transaction
@@ -92,13 +96,17 @@ function initializeDatabase() {
             description TEXT NOT NULL,
             date_lost DATE NOT NULL,
             location_seen_at VARCHAR(255),
-            found_status ENUM('pending', 'resolved') DEFAULT 'pending',
+            found_status ENUM('pending', 'claimed', 'resolved') DEFAULT 'pending',
             user_id INT NOT NULL,
             user_type ENUM('student', 'staff') NOT NULL,
             image LONGBLOB,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             INDEX (user_id, user_type)
         )";
+        $conn->query($sql);
+        
+        // Update LostItems table if it exists
+        $sql = "ALTER TABLE LostItems MODIFY COLUMN found_status ENUM('pending', 'claimed', 'resolved') DEFAULT 'pending'";
         $conn->query($sql);
         
         // Create Claims table

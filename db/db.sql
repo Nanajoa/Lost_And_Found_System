@@ -29,7 +29,7 @@ CREATE TABLE LostItems (
     description TEXT NOT NULL,
     date_lost DATE NOT NULL,
     location_seen_at VARCHAR(255),
-    found_status ENUM('pending', 'resolved') DEFAULT 'pending',
+    found_status ENUM('pending', 'claimed', 'resolved') DEFAULT 'pending',
     user_id INT NOT NULL,
     user_type ENUM('student', 'staff') NOT NULL,
     image LONGBLOB,   -- Store image data directly
@@ -42,7 +42,7 @@ CREATE TABLE LostItems (
 CREATE TABLE Claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    user_type ENUM('student', 'staff') NOT NULL,
+    user_type ENUM('student') NOT NULL,
     lost_item_id INT NOT NULL,
     date_claimed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',

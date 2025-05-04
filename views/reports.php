@@ -1,68 +1,32 @@
 <?php
 require_once __DIR__ . '/../db/database.php';
+session_start();
 
-// Get the item ID from the URL
-$item_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-// Fetch the item details from the database
-$conn = getDatabaseConnection();
-$item = null;
-
-try {
-    $stmt = $conn->prepare("
-        SELECT id, name, description, date_lost, location_seen_at, image, user_id, user_type, found_status
-        FROM LostItems 
-        WHERE id = ?
-    ");
-    $stmt->bind_param("i", $item_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $item = $result->fetch_assoc();
-} catch (Exception $e) {
-    echo "<p class='text-red-500'>Error loading item details: " . htmlspecialchars($e->getMessage()) . "</p>";
-}
-
-// If item not found, show error message
-if (!$item) {
-    echo "<p class='text-red-500'>Item not found.</p>";
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
     exit;
 }
 
-// Handle claim submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
-    session_start();
-    if (!isset($_SESSION['user_id'])) {
-        header('Location: login.php');
-        exit;
-    }
+$user_id = $_SESSION['user_id'];
+$user_type = $_SESSION['user_type'];
+$conn = getDatabaseConnection();
+$items = [];
 
-    try {
-        // Start transaction
-        $conn->begin_transaction();
-
-        // Update item status
-        $stmt = $conn->prepare("
-            UPDATE LostItems 
-            SET found_status = 'claimed' 
-            WHERE id = ? AND found_status = 'pending'
-        ");
-        $stmt->bind_param("i", $item_id);
-        $stmt->execute();
-
-        if ($stmt->affected_rows === 0) {
-            throw new Exception("Item is already claimed or resolved");
-        }
-
-        // Commit transaction
-        $conn->commit();
-
-        // Redirect to prevent form resubmission
-        header("Location: item-details.php?id=" . $item_id);
-        exit;
-    } catch (Exception $e) {
-        $conn->rollback();
-        echo "<p class='text-red-500'>Error processing claim: " . htmlspecialchars($e->getMessage()) . "</p>";
-    }
+try {
+    // Get items posted by the current user
+    $stmt = $conn->prepare("
+        SELECT id, name, description, date_lost, location_seen_at, found_status, image
+        FROM LostItems 
+        WHERE user_id = ? AND user_type = ?
+        ORDER BY date_lost DESC
+    ");
+    $stmt->bind_param("is", $user_id, $user_type);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $items = $result->fetch_all(MYSQLI_ASSOC);
+} catch (Exception $e) {
+    echo "<p class='text-red-500'>Error loading items: " . htmlspecialchars($e->getMessage()) . "</p>";
 }
 ?>
 
@@ -73,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
 
-    <title>Item Details - Ayera</title>
+    <title>My Reports - Ayera</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -117,45 +81,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
             </header>
 
             <div class="flex flex-1 flex-col px-10 py-6">
-                <!-- Item Details Section -->
-                <div class="max-w-4xl mx-auto w-full">
-                    <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <!-- Item Image -->
-                        <div class="h-96 bg-[#e7edf3] relative">
-                            <?php if ($item['image']): ?>
-                                <img src="data:image/jpeg;base64,<?php echo base64_encode($item['image']); ?>" 
-                                     alt="<?php echo htmlspecialchars($item['name']); ?>" 
-                                     class="w-full h-full object-cover" />
-                            <?php else: ?>
-                                <img src="/api/placeholder/800/384" 
-                                     alt="<?php echo htmlspecialchars($item['name']); ?>" 
-                                     class="w-full h-full object-cover" />
-                            <?php endif; ?>
-                            
-                            <?php if ($item['found_status'] === 'claimed'): ?>
-                                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                                    <span class="text-white text-2xl font-bold">Claimed</span>
-                                </div>
-                            <?php endif; ?>
+                <div class="container mt-4">
+                    <?php if (isset($_GET['success'])): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?php echo $_GET['success'] == 1 ? 'Item has been successfully resolved!' : 'Item has been successfully deleted!'; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        
-                        <!-- Item Information -->
-                        <div class="p-6">
-                            <h1 class="text-2xl font-bold mb-2"><?php echo htmlspecialchars($item['name']); ?></h1>
-                            <p class="text-[#4e7397] text-sm mb-4">Found at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
-                            <p class="text-sm mb-4"><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs text-[#4e7397]">Reported on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
-                                <div class="flex gap-4">
-                                    <?php if ($item['found_status'] === 'pending'): ?>
-                                        <form method="POST" class="inline">
-                                            <button type="submit" name="claim" class="text-[#308ce8] text-sm font-medium hover:underline">Claim</button>
-                                        </form>
+                    <?php endif; ?>
+
+                    <?php if (isset($_GET['error'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?php echo htmlspecialchars($_GET['error']); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <h2>My Found Items</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <?php foreach ($items as $item): ?>
+                            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                <div class="h-48 bg-[#e7edf3] relative">
+                                    <?php if ($item['image']): ?>
+                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($item['image']); ?>" 
+                                             alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                             class="w-full h-full object-cover" />
+                                    <?php else: ?>
+                                        <img src="/api/placeholder/400/192" 
+                                             alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                             class="w-full h-full object-cover" />
                                     <?php endif; ?>
-                                    <a href="homepage.php" class="text-[#308ce8] text-sm font-medium hover:underline">Back to Home</a>
+                                    
+                                    <?php if ($item['found_status'] === 'claimed'): ?>
+                                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                            <span class="text-white text-xl font-bold">Claimed</span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
+                                    <p class="text-[#4e7397] text-sm mb-2">Found at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
+                                    <p class="text-sm mb-3 line-clamp-2"><?php echo htmlspecialchars($item['description']); ?></p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-[#4e7397]">Reported on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
+                                        <div class="flex gap-4">
+                                            <?php if ($item['found_status'] === 'claimed'): ?>
+                                                <form method="POST" action="resolve-item.php" class="inline">
+                                                    <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>">
+                                                    <button type="submit" class="text-green-600 text-sm font-medium hover:underline">Resolve</button>
+                                                </form>
+                                            <?php endif; ?>
+                                            <form method="POST" action="delete-item.php" class="inline" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>">
+                                                <button type="submit" class="text-red-600 text-sm font-medium hover:underline">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
@@ -177,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
                     <!-- Navigation Links -->
                     <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-4 md:mb-0">
                         <a href="homepage.php" class="hover:underline hover:text-black">Home</a>
+                        <a href="reports.php" class="hover:underline hover:text-black">My Reports</a>
                     </div>
                 </div>
 
@@ -187,5 +171,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
         </div>
     </div>
 </body>
-</html>
-
+</html> 
