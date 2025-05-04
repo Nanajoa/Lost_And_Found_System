@@ -1,3 +1,19 @@
+<?php
+require_once __DIR__ . '/../db/database.php';
+
+$conn = getDatabaseConnection();
+$missingItems = [];
+
+try {
+    $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at FROM LostItems WHERE found_status = 'pending' ORDER BY date_lost DESC");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $missingItems = $result->fetch_all(MYSQLI_ASSOC);
+} catch (Exception $e) {
+    echo "<p class='text-red-500'>Error loading items: " . htmlspecialchars($e->getMessage()) . "</p>";
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,147 +68,11 @@
       <div class="flex flex-1 flex-col px-10 py-6">
         <!-- Hero Section -->
         <div class="mb-8 rounded-xl bg-[#308ce8] p-6 text-white">
-          <h1 class="mb-2 text-2xl font-bold">Welcome to Ayera</h1>
-          <p class="mb-4">Ashesi's Lost and Found App</p>
+          <h1 class="mb-2 text-2xl font-bold">Lost And Found System</h1>
+          <p class="mb-4">Explore the posts and claim the items that you recognize.</p>
           <div class="flex gap-4">
-            <a href="report.php">
-              <button class="rounded-xl bg-white px-4 py-2 text-[#308ce8] font-medium hover:bg-[#f0f2f4] transition">
-                Report Found Item
-              </button>
-            </a>
-            <a href="#categories">
-              <button class="rounded-xl bg-transparent border border-white px-4 py-2 text-white font-medium hover:bg-white/10 transition">
-                Search Lost Items
-              </button>
-            </a>
           </div>
         </div>
-
-
-        <!-- Recently Found Items -->
-        <div class="mb-8">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">Recently Found Items</h2>
-            <a href="category.php" class="text-[#308ce8] font-medium hover:underline">View all</a>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Item 1 -->
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-              <div class="h-48 bg-[#e7edf3] relative">
-                <img src="/api/placeholder/400/192" alt="Blue Water Bottle" class="w-full h-full object-cover" />
-                <span class="absolute top-2 right-2 bg-[#308ce8] text-white text-xs px-2 py-1 rounded-lg">Electronics</span>
-              </div>
-              <div class="p-4">
-                <h3 class="font-bold text-lg mb-1">Blue Water Bottle</h3>
-                <p class="text-[#4e7397] text-sm mb-2">Found in Engineering Building, 2nd Floor</p>
-                <p class="text-sm mb-3 line-clamp-2">A blue metal water bottle with Ashesi logo and some stickers.</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-[#4e7397]">Found April 12, 2025</span>
-                  <a href="item-details.php?id=1" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-              <div class="h-48 bg-[#e7edf3] relative">
-                <img src="/api/placeholder/400/192" alt="Student ID Card" class="w-full h-full object-cover" />
-                <span class="absolute top-2 right-2 bg-[#308ce8] text-white text-xs px-2 py-1 rounded-lg">ID Cards</span>
-              </div>
-              <div class="p-4">
-                <h3 class="font-bold text-lg mb-1">Student ID Card</h3>
-                <p class="text-[#4e7397] text-sm mb-2">Found at Norton Motulsky Hall</p>
-                <p class="text-sm mb-3 line-clamp-2">An Ashesi University student ID card found near the cafeteria entrance.</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-[#4e7397]">Found April 11, 2025</span>
-                  <a href="item-details.php?id=2" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-              <div class="h-48 bg-[#e7edf3] relative">
-                <img src="/api/placeholder/400/192" alt="Scientific Calculator" class="w-full h-full object-cover" />
-                <span class="absolute top-2 right-2 bg-[#308ce8] text-white text-xs px-2 py-1 rounded-lg">Stationery</span>
-              </div>
-              <div class="p-4">
-                <h3 class="font-bold text-lg mb-1">Scientific Calculator</h3>
-                <p class="text-[#4e7397] text-sm mb-2">Found in Engineering Building, Room 205</p>
-                <p class="text-sm mb-3 line-clamp-2">A Casio scientific calculator found after class on April 10th.</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-[#4e7397]">Found April 10, 2025</span>
-                  <a href="item-details.php?id=3" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recently Claimed Items -->
-        <div class="mb-8">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">Recently Claimed Items</h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Item 1 -->
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition relative">
-              <div class="absolute inset-0 bg-black/40 flex items-center justify-center rounded-xl">
-                <div class="bg-green-500 text-white px-3 py-1 rounded-lg font-medium transform rotate-[-15deg]">
-                  CLAIMED
-                </div>
-              </div>
-              <div class="h-48 bg-[#e7edf3]">
-                <img src="/api/placeholder/400/192" alt="Laptop Charger" class="w-full h-full object-cover opacity-60" />
-              </div>
-              <div class="p-4">
-                <h3 class="font-bold text-lg mb-1">Laptop Charger</h3>
-                <p class="text-[#4e7397] text-sm mb-2">Found in Library, 1st Floor</p>
-                <p class="text-sm mb-3 line-clamp-2">A Dell laptop charger found in the study area.</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-[#4e7397]">Claimed April 9, 2025</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition relative">
-              <div class="absolute inset-0 bg-black/40 flex items-center justify-center rounded-xl">
-                <div class="bg-green-500 text-white px-3 py-1 rounded-lg font-medium transform rotate-[-15deg]">
-                  CLAIMED
-                </div>
-              </div>
-              <div class="h-48 bg-[#e7edf3]">
-                <img src="/api/placeholder/400/192" alt="Room Keys" class="w-full h-full object-cover opacity-60" />
-              </div>
-              <div class="p-4">
-                <h3 class="font-bold text-lg mb-1">Room Keys</h3>
-                <p class="text-[#4e7397] text-sm mb-2">Found at Sports Fields</p>
-                <p class="text-sm mb-3 line-clamp-2">A set of keys with a blue keychain found near the basketball court.</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-[#4e7397]">Claimed April 8, 2025</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <?php
-        require_once __DIR__ . '/../db/database.php';
-        $conn = getDatabaseConnection();
-        $missingItems = [];
-
-        try {
-            $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at FROM LostItems WHERE found_status = 'pending' ORDER BY date_lost DESC");
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $missingItems = $result->fetch_all(MYSQLI_ASSOC);
-        } catch (Exception $e) {
-            echo "<p class='text-red-500'>Error loading items: " . htmlspecialchars($e->getMessage()) . "</p>";
-        }
-        ?>
 
         <div class="mb-8">
           <div class="flex justify-between items-center mb-4">
@@ -201,20 +81,20 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <?php foreach ($missingItems as $item): ?>
-              <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-                <div class="h-48 bg-[#e7edf3] relative">
-                  <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                    <div class="h-48 bg-[#e7edf3] relative">
+                        <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
+                        <p class="text-[#4e7397] text-sm mb-2">Found at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
+                        <p class="text-sm mb-3 line-clamp-2"><?php echo htmlspecialchars($item['description']); ?></p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-[#4e7397]">Found on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
+                            <a href="item-details.php?id=<?php echo $item['id']; ?>" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="p-4">
-                  <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
-                  <p class="text-[#4e7397] text-sm mb-2">Lost at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
-                  <p class="text-sm mb-3 line-clamp-2"><?php echo htmlspecialchars($item['description']); ?></p>
-                  <div class="flex justify-between items-center">
-                    <span class="text-xs text-[#4e7397]">Lost on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
-                    <a href="item-details.php?id=<?php echo $item['id']; ?>" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
-                  </div>
-                </div>
-              </div>
             <?php endforeach; ?>
           </div>
         </div>
