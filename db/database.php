@@ -21,9 +21,6 @@ function getDatabaseConnection() {
         die("Connection failed: " . $conn->connect_error);
     }
     
-    // Enable error reporting
-    $conn->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
-    
     return $conn;
 }
 
@@ -38,9 +35,6 @@ function initializeDatabase() {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-    
-    // Enable error reporting
-    $conn->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
     
     try {
         // Start transaction

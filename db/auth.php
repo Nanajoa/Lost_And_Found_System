@@ -12,6 +12,10 @@ function startSessionIfNotStarted() {
     }
 }
 
+// Include required files
+require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/../patterns/DatabaseSingleton.php';
+
 /**
  * Check if a user is logged in
  * @return bool True if user is logged in, false otherwise
@@ -111,7 +115,6 @@ function requireStudent() {
 }
 
 startSessionIfNotStarted();
-require_once 'database.php';
 
 /**
  * Check if an email already exists in any user table
@@ -175,59 +178,72 @@ function emailExists($email) {
  * @return array Result with success status and message
  */
 function registerStudent($first_name, $last_name, $email, $school_id, $password) {
-    $conn = getDatabaseConnection();
+    $db = DatabaseSingleton::getInstance();
+    $conn = $db->getConnection();
     
-    // Hash the password
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    
-    // Check if school ID already exists
-    $sql = "SELECT id FROM Students WHERE school_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $school_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        $stmt->close();
-        $conn->close();
+    try {
+        // Start transaction
+        $db->beginTransaction();
+        
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Check if school ID already exists
+        $sql = "SELECT id FROM Students WHERE school_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $school_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $stmt->close();
+            $db->rollback();
+            return [
+                'success' => false,
+                'message' => 'This school ID is already registered.'
+            ];
+        }
+        
+        // Insert new student
+        $sql = "INSERT INTO Students (first_name, last_name, email, school_id, password) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssss", $first_name, $last_name, $email, $school_id, $hashed_password);
+        
+        if ($stmt->execute()) {
+            // Get the user ID
+            $user_id = $conn->insert_id;
+            
+            // Start session and set session variables
+            startSessionIfNotStarted();
+            $_SESSION["loggedin"] = true;
+            $_SESSION["user_id"] = $user_id;
+            $_SESSION["user_type"] = "student";
+            $_SESSION["email"] = $email;
+            $_SESSION["first_name"] = $first_name;
+            $_SESSION["last_name"] = $last_name;
+            
+            // Commit transaction
+            $db->commit();
+            
+            $stmt->close();
+            
+            return [
+                'success' => true,
+                'message' => 'Registration successful.'
+            ];
+        } else {
+            $db->rollback();
+            $stmt->close();
+            return [
+                'success' => false,
+                'message' => 'Something went wrong. Please try again later.'
+            ];
+        }
+    } catch (Exception $e) {
+        $db->rollback();
         return [
             'success' => false,
-            'message' => 'This school ID is already registered.'
-        ];
-    }
-    
-    // Insert new student
-    $sql = "INSERT INTO Students (first_name, last_name, email, school_id, password) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $first_name, $last_name, $email, $school_id, $hashed_password);
-    
-    if ($stmt->execute()) {
-        // Get the user ID
-        $user_id = $conn->insert_id;
-        
-        // Start session and set session variables
-        startSessionIfNotStarted();
-        $_SESSION["loggedin"] = true;
-        $_SESSION["user_id"] = $user_id;
-        $_SESSION["user_type"] = "student";
-        $_SESSION["email"] = $email;
-        $_SESSION["first_name"] = $first_name;
-        $_SESSION["last_name"] = $last_name;
-        
-        $stmt->close();
-        $conn->close();
-        
-        return [
-            'success' => true,
-            'message' => 'Registration successful.'
-        ];
-    } else {
-        $stmt->close();
-        $conn->close();
-        
-        return [
-            'success' => false,
-            'message' => 'Something went wrong. Please try again later.'
+            'message' => 'Database error: ' . $e->getMessage()
         ];
     }
 }

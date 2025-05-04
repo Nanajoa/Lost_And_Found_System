@@ -60,7 +60,7 @@ CREATE TABLE Notifications (
     INDEX (user_id, user_type)
 );
 
--- Returned items entity
+-- Returned items table
 CREATE TABLE ReturnedItems (
     id INT PRIMARY KEY AUTO_INCREMENT,
     lost_item_id INT NOT NULL,
