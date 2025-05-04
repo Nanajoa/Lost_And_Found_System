@@ -5,7 +5,7 @@ $conn = getDatabaseConnection();
 $missingItems = [];
 
 try {
-    $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at, found_status FROM LostItems WHERE found_status != 'resolved' ORDER BY date_lost DESC");
+    $stmt = $conn->prepare("SELECT id, name, description, date_lost, location_seen_at, found_status, image FROM LostItems WHERE found_status != 'resolved' ORDER BY date_lost DESC");
     $stmt->execute();
     $result = $stmt->get_result();
     $missingItems = $result->fetch_all(MYSQLI_ASSOC);
@@ -54,13 +54,14 @@ try {
           <a href="report-form.php">
             <button
               class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-              <span class="truncate">Report Found Item</span>
+              <span class="truncate">Report</span>
             </button>
           </a>
           <a href="profile.php">
-            <div class="w-10 h-10 rounded-full bg-[#e7edf3] flex items-center justify-center overflow-hidden">
-              <img src="/api/placeholder/40/40" alt="Profile" class="h-full w-full object-cover" />
-            </div>
+            <button
+              class="flex min-w-[84px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#308ce8] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+              <span class="truncate">Profile</span>
+            </button>
           </a>
         </div>
       </header>
@@ -89,8 +90,6 @@ try {
                 </div>
             <?php endif; ?>
 
-            <h2>Lost Items</h2>
-
             <div class="mb-8">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold">Missing Items</h2>
@@ -100,7 +99,15 @@ try {
                     <?php foreach ($missingItems as $item): ?>
                         <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                             <div class="h-48 bg-[#e7edf3] relative">
-                                <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                                <?php if ($item['image']): ?>
+                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($item['image']); ?>" 
+                                         alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                         class="w-full h-full object-cover" />
+                                <?php else: ?>
+                                    <img src="/api/placeholder/400/192" 
+                                         alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                         class="w-full h-full object-cover" />
+                                <?php endif; ?>
                                 <?php if ($item['found_status'] === 'claimed'): ?>
                                     <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                                         <span class="text-white text-xl font-bold">Claimed</span>

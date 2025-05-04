@@ -1,3 +1,82 @@
+<?php
+require_once __DIR__ . '/../db/database.php';
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$conn = getDatabaseConnection();
+$user_id = $_SESSION['user_id'];
+$user_type = $_SESSION['user_type'];
+
+// Fetch user information based on user type
+try {
+    if ($user_type === 'student') {
+        $stmt = $conn->prepare("
+            SELECT first_name, last_name, email, school_id, phone_number, bio, profile_picture 
+            FROM Students 
+            WHERE id = ?
+        ");
+    } else {
+        $stmt = $conn->prepare("
+            SELECT first_name, last_name, email, faculty_id as school_id, phone_number, bio, profile_picture 
+            FROM Staff 
+            WHERE id = ?
+        ");
+    }
+    
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    
+    if (!$user) {
+        throw new Exception("User not found");
+    }
+    
+    // Get user's item statistics
+    $stmt = $conn->prepare("
+        SELECT 
+            COUNT(*) as total_items,
+            SUM(CASE WHEN found_status = 'claimed' THEN 1 ELSE 0 END) as claimed_items
+        FROM LostItems 
+        WHERE user_id = ? AND user_type = ?
+    ");
+    $stmt->bind_param("is", $user_id, $user_type);
+    $stmt->execute();
+    $stats = $stmt->get_result()->fetch_assoc();
+    
+} catch (Exception $e) {
+    echo "<p class='text-red-500'>Error loading profile: " . htmlspecialchars($e->getMessage()) . "</p>";
+    exit;
+}
+
+// Check if the logout form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    // Unset all session variables
+    $_SESSION = array();
+
+    // Delete the session cookie
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+
+    // Destroy the session
+    session_destroy();
+
+    // Redirect to index page
+    header('Location: /Lost_And_Found_System/index.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,18 +122,9 @@
           <a href="homepage.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Home</a>
           <a href="notifications.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Notifications</a>
           <a href="reports.php" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Reports</a>
-          <div class="relative group">
-            <button class="flex items-center gap-2">
-              <img src="/api/placeholder/32/32" alt="Profile" class="w-8 h-8 rounded-full object-cover border-2 border-[#308ce8]" />
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#4e7397]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            <div class="absolute right-0 mt-2 w-48 py-2 bg-white rounded-xl shadow-lg hidden group-hover:block z-10">
-              <a href="profile.php" class="block px-4 py-2 text-sm text-[#0e141b] hover:bg-[#e7edf3]">My Profile</a>
-              <a href="../index.php" class="block px-4 py-2 text-sm text-[#e94c4c] hover:bg-[#e7edf3]">Log Out</a>
-            </div>
-          </div>
+          <form method="post" class="inline">
+            <button type="submit" name="logout" class="text-[#4e7397] hover:text-[#308ce8] text-sm font-medium">Logout</button>
+          </form>
         </div>
       </header>
 
@@ -82,8 +152,8 @@
             </div>
             
             <div class="pt-20 px-8 pb-8">
-              <h2 class="text-[#0e141b] text-xl font-bold mb-1">John Doe</h2>
-              <div class="text-[#4e7397] text-sm mb-6">Student at Ashesi University</div>
+              <h2 class="text-[#0e141b] text-xl font-bold mb-1"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h2>
+              <div class="text-[#4e7397] text-sm mb-6"><?php echo htmlspecialchars($user['bio']); ?></div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -96,8 +166,8 @@
                         </svg>
                       </div>
                       <div>
-                        <div class="text-sm text-[#4e7397]">Ashesi Email</div>
-                        <div class="text-[#0e141b]">johndoe@ashesi.edu.gh</div>
+                        <div class="text-sm text-[#4e7397]"><?php echo $user_type === 'student' ? 'School ID' : 'Faculty ID'; ?></div>
+                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['school_id']); ?></div>
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -105,6 +175,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
+                      </div>
+                      <div>
+                        <div class="text-sm text-[#4e7397]">Email</div>
+                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['email']); ?></div>
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -115,7 +189,7 @@
                       </div>
                       <div>
                         <div class="text-sm text-[#4e7397]">Phone Number</div>
-                        <div class="text-[#0e141b]">+233 55 123 4567</div>
+                        <div class="text-[#0e141b]"><?php echo htmlspecialchars($user['phone_number'] ?? 'Not provided'); ?></div>
                       </div>
                     </div>
                   </div>
@@ -124,11 +198,11 @@
                   <h3 class="text-[#0e141b] text-base font-medium mb-4">Account Stats</h3>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="bg-[#e7edf3] rounded-xl p-4 text-center">
-                      <div class="text-[#308ce8] text-2xl font-bold">3</div>
+                      <div class="text-[#308ce8] text-2xl font-bold"><?php echo htmlspecialchars($stats['total_items']); ?></div>
                       <div class="text-[#4e7397] text-sm">Items Reported</div>
                     </div>
                     <div class="bg-[#e7edf3] rounded-xl p-4 text-center">
-                      <div class="text-[#308ce8] text-2xl font-bold">2</div>
+                      <div class="text-[#308ce8] text-2xl font-bold"><?php echo htmlspecialchars($stats['claimed_items']); ?></div>
                       <div class="text-[#4e7397] text-sm">Items Claimed</div>
                     </div>
                   </div>
@@ -136,177 +210,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Activity Tabs -->
-          <div class="mb-8">
-            <div class="border-b border-[#e7edf3]">
-              <div class="flex">
-                <button class="px-6 py-3 text-[#308ce8] font-medium border-b-2 border-[#308ce8]">
-                  My Reports
-                </button>
-                <button class="px-6 py-3 text-[#4e7397] font-medium">
-                  Claims History
-                </button>
-                <button class="px-6 py-3 text-[#4e7397] font-medium">
-                  Notifications
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Items List -->
-          <div class="space-y-4 mb-8">
-            <!-- Filter and Sort -->
-            <div class="flex justify-between items-center mb-4">
-              <div class="flex items-center gap-2">
-                <span class="text-sm text-[#4e7397]">Filter by:</span>
-                <select class="bg-[#e7edf3] rounded-xl border-none text-sm px-3 py-2">
-                  <option>All Reports</option>
-                  <option>Pending</option>
-                  <option>Claimed</option>
-                  <option>Expired</option>
-                </select>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm text-[#4e7397]">Sort by:</span>
-                <select class="bg-[#e7edf3] rounded-xl border-none text-sm px-3 py-2">
-                  <option>Newest First</option>
-                  <option>Oldest First</option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- Item Card -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div class="flex flex-col md:flex-row">
-                <div class="md:w-1/4">
-                  <img src="/api/placeholder/300/200" alt="Black Backpack" class="h-full w-full object-cover" />
-                </div>
-                <div class="p-6 md:w-3/4">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h3 class="text-[#0e141b] text-lg font-bold">Black Backpack</h3>
-                      <p class="text-[#4e7397] text-sm mb-4">Reported on April 10, 2025</p>
-                    </div>
-                    <span class="bg-[#fdf4e7] text-[#f5a623] text-xs font-medium px-3 py-1 rounded-full">Admin Review</span>
-                  </div>
-                  <p class="text-[#0e141b] mb-4">A black Nike backpack with a laptop inside found near the Student Center building. Contains textbooks and a water bottle.</p>
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#4e7397]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span class="text-sm text-[#4e7397]">Student Center</span>
-                    </div>
-                    <div class="flex gap-2">
-                      <button class="bg-[#e7edf3] hover:bg-[#d8e3ef] text-[#0e141b] text-sm px-4 py-2 rounded-xl">
-                        Edit
-                      </button>
-                      <button class="bg-[#308ce8] hover:bg-[#1a70c5] text-white text-sm px-4 py-2 rounded-xl">
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Item Card -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div class="flex flex-col md:flex-row">
-                <div class="md:w-1/4">
-                  <img src="/api/placeholder/300/200" alt="iPhone 12 Blue Case" class="h-full w-full object-cover" />
-                </div>
-                <div class="p-6 md:w-3/4">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h3 class="text-[#0e141b] text-lg font-bold">iPhone 12 Blue Case</h3>
-                      <p class="text-[#4e7397] text-sm mb-4">Reported on March 28, 2025</p>
-                    </div>
-                    <span class="bg-[#e8f5ee] text-[#34c759] text-xs font-medium px-3 py-1 rounded-full">Claimed</span>
-                  </div>
-                  <p class="text-[#0e141b] mb-4">A blue silicone case for iPhone 12 with a small scratch on the back. Found in the library on the second floor.</p>
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#4e7397]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span class="text-sm text-[#4e7397]">Library - 2nd Floor</span>
-                    </div>
-                    <div>
-                      <div class="flex items-center gap-2">
-                        <img src="/api/placeholder/24/24" alt="Claimer" class="w-6 h-6 rounded-full object-cover" />
-                        <span class="text-sm text-[#4e7397]">Claimed by <span class="font-medium text-[#0e141b]">Sarah Johnson</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Item Card -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div class="flex flex-col md:flex-row">
-                <div class="md:w-1/4">
-                  <img src="/api/placeholder/300/200" alt="Water Bottle" class="h-full w-full object-cover" />
-                </div>
-                <div class="p-6 md:w-3/4">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h3 class="text-[#0e141b] text-lg font-bold">Water Bottle</h3>
-                      <p class="text-[#4e7397] text-sm mb-4">Reported on February 15, 2025</p>
-                    </div>
-                    <span class="bg-[#f5e9e9] text-[#e94c4c] text-xs font-medium px-3 py-1 rounded-full">Expired</span>
-                  </div>
-                  <p class="text-[#0e141b] mb-4">A silver Hydroflask water bottle with stickers on it. Found in the Engineering building classroom E4.</p>
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#4e7397]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span class="text-sm text-[#4e7397]">Engineering Building - E4</span>
-                    </div>
-                    <div class="flex gap-2">
-                      <button class="bg-[#e7edf3] hover:bg-[#d8e3ef] text-[#0e141b] text-sm px-4 py-2 rounded-xl">
-                        Delete
-                      </button>
-                      <button class="bg-[#308ce8] hover:bg-[#1a70c5] text-white text-sm px-4 py-2 rounded-xl">
-                        Report Again
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Pagination -->
-          <div class="flex justify-center items-center gap-2">
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#e7edf3] text-[#4e7397] hover:bg-[#d8e3ef]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#308ce8] text-white">
-              1
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#e7edf3] text-[#4e7397] hover:bg-[#d8e3ef]">
-              2
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#e7edf3] text-[#4e7397] hover:bg-[#d8e3ef]">
-              3
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#e7edf3] text-[#4e7397] hover:bg-[#d8e3ef]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
       
       <!-- Footer -->
       <footer class="bg-[#e7edf3] py-6 px-10 mt-auto text-[#2c2c2c]">

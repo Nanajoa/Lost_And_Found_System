@@ -1,5 +1,13 @@
 <?php
 require_once __DIR__ . '/../db/database.php';
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
 $conn = getDatabaseConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -7,13 +15,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'] ?? '';
     $date_lost = $_POST['date_lost'] ?? '';
     $location_seen_at = $_POST['location_seen_at'] ?? '';
-    $image = $_POST['image'] ?? '';
+    $user_id = $_SESSION['user_id'];
+    $user_type = $_SESSION['user_type'];
 
     try {
-        $stmt = $conn->prepare("INSERT INTO LostItems (name, description, date_lost, location_seen_at, image) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name, $description, $date_lost, $location_seen_at, $image);
+        // Handle image upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $image = file_get_contents($_FILES['image']['tmp_name']);
+            
+            // Validate image size (2MB max)
+            if (strlen($image) > 2 * 1024 * 1024) {
+                throw new Exception("Image size exceeds 2MB limit");
+            }
+            
+            // Validate image type
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = finfo_file($finfo, $_FILES['image']['tmp_name']);
+            finfo_close($finfo);
+            
+            if (!in_array($mime_type, ['image/jpeg', 'image/png', 'image/gif'])) {
+                throw new Exception("Invalid image type. Only JPEG, PNG, and GIF are allowed");
+            }
+        } else {
+            throw new Exception("Please upload an image");
+        }
+
+        $stmt = $conn->prepare("INSERT INTO LostItems (name, description, date_lost, location_seen_at, image, user_id, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssbis", $name, $description, $date_lost, $location_seen_at, $image, $user_id, $user_type);
         $stmt->execute();
-        echo "<p class='text-green-500'>Item reported successfully!</p>";
+        header('Location: homepage.php?success=1');
+        exit;
     } catch (Exception $e) {
         echo "<p class='text-red-500'>Error reporting item: " . htmlspecialchars($e->getMessage()) . "</p>";
     }
@@ -81,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <main class="flex flex-1 flex-col px-10 py-6">
         <h1 class="text-2xl font-bold mb-6">Report Found Item</h1>
-        <form action="report-form.php" method="POST" class="space-y-4">
+        <form action="report-form.php" method="POST" enctype="multipart/form-data" class="space-y-4">
           <div class="flex flex-col">
             <label for="name" class="text-sm font-medium text-[#4e7397]">Item Name</label>
             <input type="text" id="name" name="name" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>

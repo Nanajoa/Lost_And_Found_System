@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check if item_id is provided
 if (!isset($_POST['item_id'])) {
-    header('Location: homepage.php');
+    header('Location: item-details.php?id=' . $_POST['item_id']);
     exit;
 }
 
@@ -23,7 +23,7 @@ try {
     // Start transaction
     $conn->begin_transaction();
 
-    // Verify the item is claimed
+    // First, check if the item exists and is claimed
     $stmt = $conn->prepare("
         SELECT id, found_status 
         FROM LostItems 
@@ -35,6 +35,20 @@ try {
 
     if ($result->num_rows === 0) {
         throw new Exception("Item not found or not claimed");
+    }
+
+    // Then, check if the current user has a notification for this item
+    $stmt = $conn->prepare("
+        SELECT id 
+        FROM Notifications 
+        WHERE lost_item_id = ? AND user_id = ? AND user_type = ?
+    ");
+    $stmt->bind_param("iis", $item_id, $user_id, $user_type);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        throw new Exception("You are not the one who claimed this item");
     }
 
     // Delete the notification
@@ -57,14 +71,14 @@ try {
     // Commit transaction
     $conn->commit();
 
-    // Redirect back to homepage with success message
-    header('Location: homepage.php?success=unclaimed');
+    // Redirect back to item details with success message
+    header('Location: item-details.php?id=' . $item_id . '&success=unclaimed');
     exit;
 
 } catch (Exception $e) {
     // Rollback transaction on error
     $conn->rollback();
-    header('Location: homepage.php?error=' . urlencode($e->getMessage()));
+    header('Location: item-details.php?id=' . $item_id . '&error=' . urlencode($e->getMessage()));
     exit;
 }
 ?> 

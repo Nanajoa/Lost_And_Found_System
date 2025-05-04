@@ -2,11 +2,19 @@
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    // Regenerate session ID for security
+    session_regenerate_id(true);
 }
 
-// Check if user is logged in
-$isLoggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+// Check if user is logged in using consistent session variables
+$isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['user_type']);
 $userFirstName = $isLoggedIn ? $_SESSION['first_name'] : '';
+
+// If user is logged in, redirect to homepage
+if ($isLoggedIn) {
+    header('Location: views/homepage.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html>
