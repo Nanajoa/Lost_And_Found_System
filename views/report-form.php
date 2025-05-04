@@ -89,11 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <textarea id="description" name="description" rows="4" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required></textarea>
           </div>
           <div class="flex flex-col">
-            <label for="date_lost" class="text-sm font-medium text-[#4e7397]">Date Lost</label>
+            <label for="date_lost" class="text-sm font-medium text-[#4e7397]">Date Found</label>
             <input type="date" id="date_lost" name="date_lost" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
           </div>
           <div class="flex flex-col">
-            <label for="location_seen_at" class="text-sm font-medium text-[#4e7397]">Location Seen At</label>
+            <label for="location_seen_at" class="text-sm font-medium text-[#4e7397]">Location Found At</label>
             <input type="text" id="location_seen_at" name="location_seen_at" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
           </div>
           <div class="flex flex-col">
