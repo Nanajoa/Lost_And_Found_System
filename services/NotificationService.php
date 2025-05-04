@@ -27,6 +27,17 @@ class NotificationService {
 
     public function createNotification($item_id, $claimer_id, $message) {
         try {
+            // Get claimer information
+            $stmt = $this->conn->prepare("
+                SELECT first_name, last_name, email, phone_number 
+                FROM Students 
+                WHERE id = ?
+            ");
+            $stmt->bind_param("i", $claimer_id);
+            $stmt->execute();
+            $claimer_info = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
             // Insert notification into database
             $stmt = $this->conn->prepare("INSERT INTO Notifications (item_id, claimer_id, message, created_at) VALUES (?, ?, ?, NOW())");
             $stmt->bind_param("iis", $item_id, $claimer_id, $message);
@@ -42,13 +53,14 @@ class NotificationService {
             $owner_id = $result->fetch_assoc()['user_id'];
             $stmt->close();
 
-            // Create notification data
+            // Create notification data with claimer information
             $notification = [
                 'id' => $notification_id,
                 'item_id' => $item_id,
                 'claimer_id' => $claimer_id,
                 'owner_id' => $owner_id,
                 'message' => $message,
+                'claimer_info' => $claimer_info,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
@@ -67,11 +79,13 @@ class NotificationService {
             $stmt = $this->conn->prepare("
                 SELECT n.id as notification_id, n.message, n.created_at, 
                        li.id as item_id, li.name as item_name,
-                       c.id as claim_id
+                       c.id as claim_id,
+                       s.first_name, s.last_name, s.email, s.phone_number
                 FROM Notifications n
                 JOIN LostItems li ON n.item_id = li.id
                 JOIN Claims c ON c.item_id = li.id
-                WHERE li.user_id = ? AND n.is_read = 0
+                JOIN Students s ON c.user_id = s.id
+                WHERE li.user_id = ?
                 ORDER BY n.created_at DESC
             ");
             $stmt->bind_param("i", $user_id);
