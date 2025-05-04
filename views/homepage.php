@@ -74,34 +74,52 @@ try {
           </div>
         </div>
 
-        <div class="mb-8">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">Missing Items</h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <?php foreach ($missingItems as $item): ?>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-                    <div class="h-48 bg-[#e7edf3] relative">
-                        <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
-                        <?php if ($item['found_status'] === 'claimed'): ?>
-                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                                <span class="text-white text-xl font-bold">Claimed</span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
-                        <p class="text-[#4e7397] text-sm mb-2">Found at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
-                        <p class="text-sm mb-3 line-clamp-2"><?php echo htmlspecialchars($item['description']); ?></p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-[#4e7397]">Found on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
-                            <a href="item-details.php?id=<?php echo $item['id']; ?>" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
-                        </div>
-                    </div>
+        <div class="container mt-4">
+            <?php if (isset($_GET['success']) && $_GET['success'] === 'unclaimed'): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Item has been successfully unclaimed!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            <?php endforeach; ?>
-          </div>
+            <?php endif; ?>
+
+            <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?php echo htmlspecialchars($_GET['error']); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <h2>Lost Items</h2>
+
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Missing Items</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <?php foreach ($missingItems as $item): ?>
+                        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                            <div class="h-48 bg-[#e7edf3] relative">
+                                <img src="/api/placeholder/400/192" alt="<?php echo htmlspecialchars($item['name']); ?>" class="w-full h-full object-cover" />
+                                <?php if ($item['found_status'] === 'claimed'): ?>
+                                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                        <span class="text-white text-xl font-bold">Claimed</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg mb-1"><?php echo htmlspecialchars($item['name']); ?></h3>
+                                <p class="text-[#4e7397] text-sm mb-2">Found at: <?php echo htmlspecialchars($item['location_seen_at']); ?></p>
+                                <p class="text-sm mb-3 line-clamp-2"><?php echo htmlspecialchars($item['description']); ?></p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-[#4e7397]">Found on <?php echo date('M d, Y', strtotime($item['date_lost'])); ?></span>
+                                    <a href="item-details.php?id=<?php echo $item['id']; ?>" class="text-[#308ce8] text-sm font-medium hover:underline">View details</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
       </div>
 

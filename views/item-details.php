@@ -152,6 +152,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['claim'])) {
                                             <button type="submit" name="claim" class="text-[#308ce8] text-sm font-medium hover:underline">Claim</button>
                                         </form>
                                     <?php endif; ?>
+                                    <?php if ($item['found_status'] === 'claimed'): ?>
+                                        <form method="POST" action="unclaim-item.php" class="inline">
+                                            <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>">
+                                            <button type="submit" class="text-red-600 text-sm font-medium hover:underline">Unclaim</button>
+                                        </form>
+                                    <?php endif; ?>
                                     <a href="homepage.php" class="text-[#308ce8] text-sm font-medium hover:underline">Back to Home</a>
                                 </div>
                             </div>
