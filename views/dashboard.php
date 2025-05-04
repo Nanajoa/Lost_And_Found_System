@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once __DIR__ . '/../db/database.php';
 require_once __DIR__ . '/../db/auth.php';
 
@@ -6,10 +9,17 @@ require_once __DIR__ . '/../db/auth.php';
 session_start();
 requireLogin();
 
+// Debug: Check session variables
+error_log('Session Variables: ' . print_r($_SESSION, true));
+
 // Get user information
 $userType = getCurrentUserType();
 $userId = getCurrentUserId();
 $userName = $_SESSION['name'] ?? null;
+
+// Debug: Check user information
+error_log('User Type: ' . $userType);
+error_log('User ID: ' . $userId);
 
 // Get recent reports for the user
 $conn = getDatabaseConnection();
@@ -76,8 +86,30 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     $reports = $result->fetch_all(MYSQLI_ASSOC);
+
+    // Debug: Check reports data
+    error_log('Reports Data: ' . print_r($reports, true));
 } catch (Exception $e) {
     $error = "Error loading reports: " . $e->getMessage();
+    // Debug: Log error
+    error_log('Error: ' . $error);
+}
+
+// Fetch statistics
+try {
+    $students_count = $conn->query("SELECT COUNT(*) as count FROM Students")->fetch_assoc()['count'];
+    $missing_items_count = $conn->query("SELECT COUNT(*) as count FROM LostItems")->fetch_assoc()['count'];
+    $claimed_items_count = $conn->query("SELECT COUNT(*) as count FROM Claims")->fetch_assoc()['count'];
+    $resolved_items_count = $conn->query("SELECT COUNT(*) as count FROM ReturnedItems")->fetch_assoc()['count'];
+
+    // Debug: Check statistics
+    error_log('Students Count: ' . $students_count);
+    error_log('Missing Items Count: ' . $missing_items_count);
+    error_log('Claimed Items Count: ' . $claimed_items_count);
+    error_log('Resolved Items Count: ' . $resolved_items_count);
+} catch (Exception $e) {
+    // Debug: Log error
+    error_log('Error fetching statistics: ' . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
